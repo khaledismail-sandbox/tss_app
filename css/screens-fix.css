@@ -1,0 +1,142 @@
+/* screens-fix.css — The Secret Society demo · the standalone "after" page (/venue/fix/seat-at-approval).
+   Layout only: slot grid with capacity bars, applicant / waitlist lists, the slot-picker sheet rows and the sticky
+   action footer. Every colour is a var(--…) token from css/tokens.css — no literal colours. The page reuses the
+   approved components (.header.is-large, .tag-teal, .card, .list-row, .btn, .badge, .sheet) from components.css. */
+
+/* ---------- Page shell: header + body + sticky footer inside the scrolling #screen ---------- */
+.fix-page { min-height: 100%; display: flex; flex-direction: column; }
+.fix-body { flex: 1 1 auto; }
+
+/* Venue row (dashboard pattern): ⌀58 thumb · caption · display-sm-light title */
+.fix-venue { display: flex; align-items: center; gap: var(--space-thumb-text-gap); margin-top: var(--space-5); }
+.fix-venue-body { min-width: 0; }
+.fix-venue-caption { font: var(--type-meta); color: var(--color-text-tertiary); }
+.fix-venue-title { font: var(--type-display-sm-light); margin-top: var(--space-1); }
+
+/* Section heads: "Slots · 6 of 12 seats free", "Applicants [5]" */
+.fix-head { margin-top: var(--space-8); }
+.fix-head-meta { font: var(--type-meta); color: var(--color-text-meta); white-space: nowrap; }
+
+/* ---------- Slot grid: 2 × 2 cards, r22 like the dashboard tiles ---------- */
+.fix-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
+.fix-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--dash-tile-pad);
+  border-radius: var(--radius-tile-dashboard);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+.fix-slot-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.fix-slot-day { font: var(--type-card-title); white-space: nowrap; }
+.fix-slot-time { font: var(--type-meta); color: var(--color-text-meta); white-space: nowrap; }
+.fix-slot-seats { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-meta-sm); color: var(--color-text-tertiary); }
+.fix-slot .cap-bar { margin-top: var(--space-2); }
+.fix-slot.is-full .fix-slot-day { color: var(--color-text-secondary); }
+/* Approved list under the slot: one line per seated guest; pre-seated guests grey, a freshly seated one white with a green dot */
+.fix-slot-guests { display: flex; flex-direction: column; gap: var(--space-1); margin-top: var(--space-3); }
+.fix-guest { display: flex; align-items: center; gap: var(--space-2); min-height: var(--size-check-badge); font: var(--type-meta-sm); color: var(--color-text-secondary); }
+.fix-guest > .truncate { min-width: 0; }
+.fix-guest-dot { flex: none; width: var(--size-badge-dot); height: var(--size-badge-dot); border-radius: var(--radius-pill); background: var(--color-text-muted); }
+.fix-guest.is-empty { color: var(--color-text-muted); }
+.fix-guest.is-empty .fix-guest-dot { background: var(--color-surface-pressed); }
+.fix-guest.is-new { color: var(--color-text-primary); animation: fix-pop var(--duration-slow) var(--ease-out) both; }
+.fix-guest.is-new .fix-guest-dot { background: var(--color-success); }
+/* the card an applicant just landed in rings once in the tab accent */
+.fix-slot.is-hit { animation: fix-hit 700ms var(--ease-out); }
+
+/* ---------- Capacity bar (.cap-bar with --fill) — track on the surface, action-gradient fill; grey when full ---------- */
+.cap-bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 6px; /* no spacing token this thin; the 5 px home indicator is the nearest and semantically wrong */
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-pressed);
+  overflow: hidden;
+}
+.cap-bar-fill {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: var(--fill, 0%);
+  border-radius: inherit;
+  background: var(--gradient-action);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+.cap-bar.is-full .cap-bar-fill { background: var(--color-text-muted); }
+.cap-bar.is-sm { margin-top: var(--space-2); }
+
+/* ---------- Applicant / waitlist lists (.list-row from components.css) ---------- */
+.fix-list { display: flex; flex-direction: column; gap: var(--space-list-gap); margin-top: var(--space-4); }
+.fix-row { transition: opacity var(--duration-base) var(--ease-in), transform var(--duration-base) var(--ease-in); }
+.fix-row.is-leaving { opacity: 0; transform: translateX(var(--space-6)) scale(var(--press-scale)); pointer-events: none; }
+.fix-row.is-new { animation: fix-pop var(--duration-slow) var(--ease-out) both; }
+.fix-row .list-row-action .tag { margin-top: var(--space-2); }
+/* Inbox-clear card once every applicant is handled */
+.fix-empty { display: flex; align-items: center; gap: var(--space-thumb-text-gap); min-height: var(--size-list-row-h); }
+.fix-empty-icon { display: grid; place-items: center; flex: none; width: var(--size-thumb); height: var(--size-thumb); border-radius: var(--radius-pill); background: var(--color-tag-teal-bg); color: var(--color-tag-teal-text); }
+.fix-empty-body { min-width: 0; }
+.fix-empty .card-meta { margin-top: var(--space-1); }
+
+/* ---------- Sticky footer: Reset | Approve all ---------- */
+.fix-foot {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--gutter) calc(var(--home-area-h) + var(--space-3));
+  background: linear-gradient(180deg, transparent 0%, var(--color-bg) 40%);
+}
+.fix-foot .btn-row.is-wide > .btn-secondary { flex: 0 0 auto; }
+.fix-foot .btn-row.is-wide > .btn-primary { flex: 1 1 auto; }
+.fix-foot .btn .sep { color: var(--color-text-on-accent); }
+
+/* ---------- Slot picker sheet rows (radio behaviour) ---------- */
+.fix-picks { display: flex; flex-direction: column; gap: var(--space-2); }
+.fix-pick {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: var(--size-field-h);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-w-ring) solid transparent;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+.fix-pick:active { background: var(--color-surface-pressed); }
+.fix-pick.is-selected { border-color: var(--color-accent-tab); background: var(--color-surface-pressed); }
+.fix-pick:disabled { cursor: default; }
+.fix-pick:disabled .fix-pick-title, .fix-pick:disabled .cap-bar { opacity: 0.45; } /* dim the slot, keep its Full tag legible */
+.fix-pick-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.fix-pick-title { font: var(--type-body); }
+.fix-pick-side { display: flex; align-items: center; gap: var(--space-2); }
+.fix-pick-seats { font: var(--type-meta-sm); color: var(--color-text-tertiary); white-space: nowrap; }
+.fix-check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-badge);
+  color: var(--color-badge-text);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--duration-fast) var(--ease-spring), transform var(--duration-fast) var(--ease-spring);
+}
+.fix-pick.is-selected .fix-check { opacity: 1; transform: none; }
+.fix-pick:disabled .fix-check { visibility: hidden; }
+
+/* ---------- Motion ---------- */
+@keyframes fix-pop { from { opacity: 0; transform: translateY(var(--space-2)); } to { opacity: 1; transform: none; } }
+@keyframes fix-hit {
+  0% { box-shadow: 0 0 0 0 var(--color-accent-tab); }
+  35% { box-shadow: 0 0 0 var(--border-w-ring) var(--color-accent-tab); }
+  100% { box-shadow: 0 0 0 var(--border-w-ring) transparent; }
+}

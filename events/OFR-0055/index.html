@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#010101">
+<meta name="robots" content="noindex">
+<title>The Secret Society</title>
+<!-- Analytics + Session Replay + Web Experiment (unified smart loader) -->
+<script src="https://cdn.amplitude.com/script/91a049dfcf02afc23c2aa2d43f1d3748.js"></script>
+<!-- Guides & Surveys -->
+<script src="https://cdn.amplitude.com/script/91a049dfcf02afc23c2aa2d43f1d3748.engagement.js"></script>
+<!-- Bootstrap (SPEC §6.2) — inline and synchronous so the loader's own auto-init (autocapture on) can never win the
+     race while the CDN is cached. js/analytics.js detects window.TSS_AMP ('inline' boot mode) and only adds its own
+     geo + validation plugins. Keep the options identical to TSS.analytics INIT_OPTIONS. -->
+<script>
+(function (a) { if (!a) return;
+  var b = window.TSS_AMP = { sr_added: false, engagement_added: false, ready: null };
+  try { if (window.sessionReplay) { a.add(window.sessionReplay.plugin({ sampleRate: 1, privacyConfig: { defaultMaskLevel: 'medium' } })); b.sr_added = true; } } catch (e) {}
+  try { if (window.engagement) { a.add(window.engagement.plugin()); b.engagement_added = true; } } catch (e) {}
+  var r = a.init('91a049dfcf02afc23c2aa2d43f1d3748', { fetchRemoteConfig: true, autocapture: false, defaultTracking: false, identityStorage: 'sessionStorage' });
+  b.ready = (r && r.promise) ? r.promise : Promise.resolve(r);
+  if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) a.setOptOut(true);
+})(window.amplitude);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tss-demo/css/tokens.css">
+<link rel="stylesheet" href="/tss-demo/css/base.css">
+<link rel="stylesheet" href="/tss-demo/css/components.css">
+<link rel="stylesheet" href="/tss-demo/css/screens.css">
+<link rel="stylesheet" href="/tss-demo/css/screens-blogger.css">
+<link rel="stylesheet" href="/tss-demo/css/screens-venue.css">
+<link rel="stylesheet" href="/tss-demo/css/screens-fix.css">
+</head>
+<body>
+<div id="app" class="stage">
+  <div class="phone" id="phone">
+    <div class="phone-island" aria-hidden="true"></div>
+    <div class="statusbar" id="statusbar"></div>
+    <div class="screen" id="screen" role="main"></div>
+    <nav class="tabbar" id="tabbar" hidden></nav>
+    <div class="home-bar" aria-hidden="true"></div>
+    <div id="sheet-root"></div>
+    <div id="toast-root"></div>
+  </div>
+</div>
+<script src="/tss-demo/js/icons.js"></script>
+<script src="/tss-demo/js/config.js"></script>
+<script src="/tss-demo/js/data.js"></script>
+<script src="/tss-demo/js/state.js"></script>
+<script src="/tss-demo/js/analytics.js"></script>
+<script src="/tss-demo/js/ui.js"></script>
+<script src="/tss-demo/js/router.js"></script>
+<script src="/tss-demo/js/screens-core.js"></script>
+<script src="/tss-demo/js/screens-blogger.js"></script>
+<script src="/tss-demo/js/screens-venue.js"></script>
+<script src="/tss-demo/js/screens-fix.js"></script>
+<script src="/tss-demo/js/app.js"></script>
+</body>
+</html>

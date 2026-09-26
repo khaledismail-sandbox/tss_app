@@ -1,0 +1,783 @@
+/* components.css — The Secret Society demo · component classes.
+   Specs: DESIGN_TOKENS.md §11. Every colour, radius, size and font is a var(--…) token from css/tokens.css. */
+
+/* ---------- Icons (Lucide sprite from js/icons.js) ---------- */
+.icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon * { vector-effect: var(--icon-vector-effect); }
+
+/* ---------- Header rows ---------- */
+.header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-header-icon-gap);
+  min-height: var(--header-row-h);
+  margin-top: var(--header-top);
+  padding: 0 var(--gutter);
+}
+.header.is-large { margin-top: var(--header-top-large); }
+.header.is-overlay { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
+.header .grow { flex: 1 1 auto; min-width: 0; }
+.header-title { font: var(--type-display-xl); letter-spacing: var(--tracking-display); }
+.header-group { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.header-back-title { font: var(--type-title); }
+
+/* "Hi, Sara" avatar pill */
+.header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--name-pill-text-gap);
+  height: var(--size-name-pill-h);
+  padding: 0 var(--name-pill-pad-right) 0 var(--name-pill-pad);
+  border-radius: var(--radius-pill);
+  border: var(--border-w-ring) solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: var(--type-greeting);
+  white-space: nowrap;
+}
+.header-pill-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size-name-pill-avatar);
+  height: var(--size-name-pill-avatar);
+  border-radius: var(--radius-pill);
+  background: var(--color-avatar-circle);
+  color: var(--color-avatar-glyph);
+}
+.header-pill .icon-chevron-down { margin-left: calc(-1 * var(--space-1)); }
+/* The avatar circle holds a filled silhouette (solid person / briefcase, 6.5.5 + 6.5.1-1), not an outline.
+   Box 27 so the briefcase fills 57 % of the ⌀40 disc (6.5.5 glyph 22.6×20.7 CSS in the ⌀38.3 disc). */
+.header-pill-avatar .icon { width: var(--icon-size-avatar-glyph); height: var(--icon-size-avatar-glyph); fill: currentColor; stroke: none; }
+
+/* ---------- Circular icon buttons ---------- */
+.icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--size-icon-button);
+  height: var(--size-icon-button);
+  border-radius: var(--radius-pill);
+  border: var(--border-w-ring) solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-primary);
+  transition: background-color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+}
+.icon-btn:active { background-color: var(--color-border); transform: scale(var(--press-scale)); }
+.icon-btn.is-filled { background: var(--color-surface); border-color: transparent; }
+/* Lucide's bell spans 17.5×20 of its 24 grid, so it takes a 22 box (ink 17.8×20.1 CSS; 6.5.4 / 6.5.5 measure 17.6–18.0×20.3–20.7) where the 18/24 search glyph keeps the 26 box */
+.icon-btn .icon-bell { width: var(--icon-size-bell); height: var(--icon-size-bell); }
+/* Explore layout toggle: a 55×42 stadium the same height as the chips beside it (6.5.3), not a ⌀50 circle */
+.icon-btn.is-pill { width: var(--size-layout-toggle-w); height: var(--size-layout-toggle-h); }
+/* 44 px hit area around the 42 px stadium (the only icon button shorter than the touch target) */
+.icon-btn.is-pill::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+/* Notification badge: ⌀17 disc, 11/600 digits, 2 px side padding so "30" is ≈19×17 (6.5.1 ≈15×15 foreshortened; 6.5.3 "2" 16.9) */
+.icon-btn-badge {
+  position: absolute;
+  top: calc(-1 * var(--border-w-ring));
+  right: calc(-1 * var(--border-w-ring));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size-icon-button-badge);
+  height: var(--size-icon-button-badge);
+  padding: 0 var(--badge-sm-pad-x);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-badge);
+  color: var(--color-badge-text);
+  font: var(--type-badge);
+}
+
+/* White heart disc on the Explore event card */
+.heart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--size-heart-button);
+  height: var(--size-heart-button);
+  border-radius: var(--radius-pill);
+  background: var(--color-heart-button-bg);
+  color: var(--color-heart-button-icon);
+  transition: transform var(--duration-fast) var(--ease-spring);
+}
+.heart-btn:active { transform: scale(var(--press-scale)); }
+.heart-btn.is-liked { color: var(--color-heart-liked); }
+.heart-btn.is-liked .icon { fill: currentColor; }
+
+/* Floating action button */
+.fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--size-fab);
+  height: var(--size-fab);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-fab);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.fab:active { transform: scale(var(--press-scale)); }
+.fab.is-fixed { position: absolute; right: var(--fab-right); bottom: calc(var(--size-tabbar-h) + var(--fab-bottom-gap)); z-index: 4; }
+
+/* Swipe X / ✓ */
+.swipe-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--swipe-button-centres) - (var(--size-swipe-x) + var(--size-swipe-check)) / 2);
+}
+.swipe-btn { display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: var(--radius-pill); color: var(--color-text-on-accent); }
+.swipe-btn.is-x { width: var(--size-swipe-x); height: var(--size-swipe-x); background: var(--gradient-brand); box-shadow: var(--shadow-swipe-x); }
+.swipe-btn.is-check { width: var(--size-swipe-check); height: var(--size-swipe-check); background: var(--gradient-action); box-shadow: var(--shadow-swipe-check); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--size-button-h);
+  padding: 0 var(--button-pad-x);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font: var(--type-button);
+  white-space: nowrap;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+/* 44 px hit area around the 42 px visual box */
+.btn::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+.btn:active { filter: brightness(var(--press-brightness)); transform: scale(var(--press-scale)); }
+.btn-primary { background: var(--gradient-action); color: var(--color-text-on-accent); }
+.btn-primary.is-wide { background: var(--gradient-action-wide); }
+.btn-secondary { background: var(--color-surface-elevated); color: var(--color-text-primary); }
+.btn-secondary:active { background: var(--color-surface-pressed); filter: none; }
+.btn-ghost { background: transparent; box-shadow: inset 0 0 0 var(--border-w-hairline) var(--color-border-strong); }
+.btn-ghost:active { background: var(--color-border); filter: none; }
+.btn:disabled, .btn.is-disabled { background: var(--color-surface-disabled); color: var(--color-text-disabled); pointer-events: none; box-shadow: none; }
+/* Small pill button ("Show full Calendar" 147×36 — 6.5.3 corner fit 18.6 ≈ h/2, a full stadium, not r12).
+   Label at the chip size 12/500: 6.5.3 "Show full Calendar" ink 271×24 px, 'S' cap 24 px — the same 23–24 px cap as the chips
+   beside it; PJS 500 at 12 renders 275×24 (13 gave 298×26 and crowded the h36 pill). */
+.btn-sm { height: var(--size-calendar-pill-h); padding: 0 var(--space-4); border-radius: var(--radius-pill); font: var(--fw-medium) var(--fs-chip)/1.2 var(--font-sans); }
+.btn-lg { height: var(--size-button-h-lg); border-radius: var(--radius-button-lg); }
+.btn-block { display: flex; width: 100%; }
+.w-accept { width: var(--size-button-w-accept); padding-left: 0; padding-right: 0; }
+.w-start { width: var(--size-button-w-start); padding-left: 0; padding-right: 0; }
+.btn-row { display: flex; gap: var(--space-button-gap); }
+.btn-row.is-wide { gap: var(--space-button-gap-wide); }
+.btn-row.is-wide > .btn { flex: 1 1 0; }
+
+/* Gradient text link with a 1 px gradient underline ("Add Review") */
+.link-gradient {
+  position: relative;
+  display: inline-block;
+  font: var(--type-link);
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+.link-gradient::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+/* Rule 4 below the line box ⇒ ≈6 CSS below the baseline (6.5.8 "Add Review": glyph bottom 1355 → rule 1376–1378 = 6.5 CSS, 1 px thick) */
+.link-gradient::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(-1 * var(--space-1));
+  height: var(--gradient-text-underline-h);
+  background: var(--gradient-text);
+}
+/* "See All ↗" — 44 px hit area around the 17 px text line; gap 8 + the 19 box's 4.75 ink inset puts the arrow ≈12.5 from the text (6.5.5: 12.3) */
+.section-link { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-section-link); color: var(--color-text-secondary); white-space: nowrap; }
+/* The arrow's two sub-paths overlap at the corner; an opaque grey keeps the overlap from compounding to a bright spot.
+   19 box ⇒ ink 7.9 + 1.6 = 9.5 CSS (6.5.5 arrow 9.6×9.2, 0.85 × the "S" cap) */
+.section-link .icon { width: var(--icon-size-arrow); height: var(--icon-size-arrow); color: var(--color-text-secondary-hex); }
+.section-link::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+
+/* ---------- Chips, tags, badges ---------- */
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-chip-gap);
+  flex: none;
+  height: var(--size-chip-h);
+  padding: 0 var(--chip-pad-x);
+  border-radius: var(--radius-pill);
+  border: var(--border-w-hairline) solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: var(--type-chip);
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.chip::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+.chip:active, .chip.is-active { background: var(--color-surface-elevated); }
+.chip .icon { width: var(--icon-size-chip); height: var(--icon-size-chip); }
+.chip-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size-chip-badge);
+  height: var(--size-chip-badge);
+  padding: 0 var(--badge-sm-pad-x);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-badge);
+  color: var(--color-badge-text);
+  font: var(--type-badge);
+}
+.chip-row { display: flex; gap: var(--space-chip-gap); }
+
+/* Outlined uppercase tag chips (BAR · BEACH CAFE) and status tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  height: var(--size-tag-h);
+  padding: 0 var(--tag-chip-pad-x);
+  border-radius: var(--radius-pill);
+  border: var(--border-w-hairline) solid var(--color-tag-chip-outline);
+  color: var(--color-tag-chip-text);
+  font: var(--type-tag-chip-upper);
+  letter-spacing: var(--tracking-upper);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tag-teal, .tag-red, .tag-teal-solid { border: 0; padding: 0 var(--tag-pad-x); font: var(--type-tag-upper); }
+.tag-teal { background: var(--color-tag-teal-bg); color: var(--color-tag-teal-text); }
+.tag-red { background: var(--color-tag-red-bg); color: var(--color-tag-red-text); }
+.tag-teal-solid { background: var(--color-tag-teal-solid-bg); color: var(--color-tag-teal-solid-text); }
+.tag-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Count badge (title "24", chip "2") and ⌀8 dot */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: var(--size-count-badge-h);
+  height: var(--size-count-badge-h);
+  padding: 0 var(--count-badge-pad-x);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-badge);
+  color: var(--color-badge-text);
+  font: var(--type-badge);
+}
+.badge-dot { display: inline-block; flex: none; width: var(--size-badge-dot); height: var(--size-badge-dot); border-radius: var(--radius-pill); background: var(--gradient-badge); }
+
+/* ---------- Segmented control ---------- */
+/* Container padding 6 / 4 plus a 4 px margin on every segment: the selected pill sits 8 in from the container's
+   sides and ≈8 narrower than its segment (6.5.7 pill 157–159 CSS in the 342 container, left inset 7.3, right
+   edge 5.4 short of the midline; 6.5.8 3-up pill ≈4 inside each third). Segments stay equal. */
+.seg {
+  display: flex;
+  height: var(--size-segmented-h);
+  padding: var(--segmented-pad) var(--space-1);
+  border-radius: var(--radius-segmented);
+  background: var(--color-surface);
+}
+.seg-item {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--size-segment-pill-h);
+  margin: 0 var(--space-1);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-segment);
+  background: transparent;
+  color: var(--color-text-segment-inactive);
+  font: var(--type-label-upper);
+  letter-spacing: var(--tracking-upper);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--duration-base) var(--ease-standard);
+}
+.seg-item.is-active { background: var(--gradient-brand); color: var(--color-text-on-accent); }
+/* To Review's 3-up control (CHECKED IN | CHECKED OUT | NO SHOW) sets its labels a half-step larger than the 2-up
+   ESTABLISHMENTS | BRANDS control: 6.5.8 word boxes 172×21 / 203×22 px vs 6.5.7 caps 20 px (10 px). */
+.seg.is-3up .seg-item { font-size: var(--fs-label-upper-3up); }
+
+/* ---------- Toggle switch + toggle bar ---------- */
+.toggle {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--size-switch-w);
+  height: var(--size-switch-h);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-toggle-track);
+  transition: background-color var(--duration-base) var(--ease-standard);
+}
+.toggle::before { content: ""; position: absolute; left: calc(-1 * var(--space-2)); right: calc(-1 * var(--space-2)); top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: var(--switch-pad);
+  left: var(--switch-pad);
+  width: var(--size-switch-knob);
+  height: var(--size-switch-knob);
+  border-radius: var(--radius-pill);
+  background: var(--color-toggle-knob);
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+/* knob left = left label active (reference); .is-right / aria-checked moves it to the right label */
+.toggle.is-right::after, .toggle[aria-checked="true"]::after { transform: translateX(calc(var(--size-switch-w) - var(--size-switch-knob) - 2 * var(--switch-pad))); }
+.toggle.is-off { background: var(--color-surface-pressed); }
+.toggle-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  height: var(--size-toggle-bar-h);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-toggle-bar);
+  background: var(--color-surface);
+}
+.toggle-bar-label { font: var(--type-toggle-label); color: var(--color-text-primary); white-space: nowrap; transition: color var(--duration-base) var(--ease-standard); }
+.toggle-bar-label.is-inactive { color: var(--color-text-muted); }
+
+/* ---------- Date pills ---------- */
+.date-panel {
+  background: var(--gradient-surface-section);
+  border-radius: 0 0 var(--radius-panel-bottom) var(--radius-panel-bottom);
+  padding-bottom: var(--date-panel-overhang);
+}
+.date-strip { display: flex; gap: var(--space-tile-gap); }
+.date-pill {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: var(--size-date-pill-w);
+  height: var(--size-date-pill-h);
+  padding-top: var(--date-pill-stack-bias); /* the centred stack sits 2 low in the reference (6.5.3 cap tops 23 / 52 / 74) */
+  border: 0;
+  border-radius: var(--radius-date-pill);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: background-color var(--duration-base) var(--ease-standard);
+}
+.date-pill-digit { font: var(--type-date-digit); }
+.date-pill-month { font: var(--type-date-month); margin-top: var(--space-1); } /* digit→month 8, month→day 4 (6.5.3 cap tops 23 / 52 / 74) */
+.date-pill-day { font: var(--type-date-day); color: var(--color-text-muted); }
+.date-pill.is-selected { background: var(--gradient-action-tall); }
+/* "Show full Calendar" pill straddling the panel's bottom edge, its centre lifted 5 above the edge
+   (6.5.3: 23 CSS above / 13 below); the bottom margin keeps the following content where it was. */
+.calendar-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-calendar-pill-w);
+  height: var(--size-calendar-pill-h);
+  margin: calc(var(--size-calendar-pill-h) / -2 - var(--calendar-pill-lift)) auto var(--calendar-pill-lift);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font: var(--fw-medium) var(--fs-chip)/1.2 var(--font-sans); /* 12/500 — see .btn-sm */
+  white-space: nowrap;
+}
+.calendar-pill::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+
+/* ---------- Stat tiles (My Events) ---------- */
+.stat-row { display: flex; gap: var(--space-tile-gap); }
+.stat-tile {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-stat-gap);
+  width: var(--size-stat-tile-w);
+  height: var(--size-stat-tile-h);
+  border-radius: var(--radius-tile);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+.stat-tile-number { font: var(--type-stat-number); }
+.stat-tile-label { font: var(--type-stat-label); color: var(--color-text-primary); white-space: nowrap; }
+.stat-tile.gradient, .stat-tile.is-gradient { background: var(--gradient-brand); }
+.stat-tile.gradient .stat-tile-label, .stat-tile.is-gradient .stat-tile-label { color: var(--color-text-on-accent); }
+.stat-tile > .badge-dot { position: absolute; top: 0; right: 0; }
+
+/* ---------- Dashboard tiles (venue manager) ---------- */
+.dash-grid { display: grid; grid-template-columns: repeat(3, var(--size-dash-tile)); justify-content: space-between; row-gap: var(--space-grid-gap); }
+.dash-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: var(--size-dash-tile);
+  height: var(--size-dash-tile);
+  padding: var(--dash-tile-pad);
+  border-radius: var(--radius-tile-dashboard);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+}
+.dash-tile-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size-icon-square);
+  height: var(--size-icon-square);
+  border-radius: var(--radius-icon-square);
+  background: var(--color-icon-square-neutral);
+  color: var(--color-icon-square-glyph);
+  font: var(--fw-semibold) var(--fs-meta)/1 var(--font-sans);
+}
+.dash-tile-icon.is-red { background: var(--color-danger); }
+.dash-tile-icon.is-teal { background: var(--color-info); }
+.dash-tile-icon.is-green { background: var(--color-green); }
+.dash-tile-icon.is-purple { background: var(--color-purple); }
+.dash-tile-icon.is-neutral { background: var(--color-icon-square-neutral); }
+.dash-tile-icon.is-accent { background: var(--gradient-accent-deep); }
+.dash-tile-arrow {
+  position: absolute;
+  top: var(--dash-tile-arrow-top);
+  right: var(--dash-tile-arrow-right);
+  width: var(--icon-size-tile-arrow);
+  height: var(--icon-size-tile-arrow);
+  color: var(--color-text-meta);
+}
+.dash-tile-label { font: var(--type-body); color: var(--color-text-primary); }
+/* "Create New Event": 1 px brand-gradient border on the canvas */
+.dash-tile.is-create {
+  border: var(--border-w-hairline) solid transparent;
+  background: linear-gradient(var(--color-bg), var(--color-bg)) padding-box, var(--gradient-brand) border-box;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-card-pad);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-card);
+}
+.card-title { font: var(--type-card-title); }
+/* Meta lines separate their parts with <span class="sep">•</span>: the bullet scaled to .55 em renders the reference's
+   2.3 CSS dot (6.5.4 / 6.5.5 separators 6×6 px, ≈0.6–0.9 CSS below the cap centre, 4.6–5.0 CSS clear each side) — the
+   bare bullet is a 3.8 CSS blob and PJS's middle dot U+00B7 only 1.15. Works inside .card-meta, .media-card-meta,
+   .sheet-sub, .t-meta and the status tags alike (em-based). */
+.card-meta { font: var(--type-meta); color: var(--color-text-meta); }
+.sep { display: inline-block; font-size: calc(var(--meta-sep-scale) * 1em); vertical-align: middle; margin: 0 var(--meta-sep-gap); }
+/* Key : value meta line ("Brand : The Secret Society Resort") — the key takes the lavender meta tone, the value stays
+   white, both at the body size (6.5.7 (388,1496)–(890,1544): "Brand :" core #767093, value #fff, one 13 px run). */
+.card-kv { font: var(--type-body); color: var(--color-text-primary); }
+.card-kv .k { color: var(--color-text-meta); }
+
+/* Invite card: ⌀50 thumb · title · meta · Decline | Accept */
+.invite-card {
+  display: grid;
+  grid-template-columns: var(--size-thumb) minmax(0, 1fr);
+  column-gap: var(--space-thumb-text-gap);
+  align-items: start;
+  min-height: var(--size-invite-card-h);
+  padding: var(--space-card-pad);
+}
+.invite-card-body { display: flex; flex-direction: column; min-width: 0; }
+/* 6.5.4 card 1: thumb 17, title cap 25.7, meta cap 50.2, buttons 79–122, bottom inset 16.5 → 16+5+19.5+6+15.6+17+42+16 = 137 */
+.invite-card .card-title { margin-top: var(--space-invite-title-top); }
+.invite-card .card-meta { margin-top: var(--space-invite-title-meta); }
+.invite-card-actions { display: flex; gap: var(--space-button-gap); margin-top: var(--space-row-to-buttons); }
+
+/* Task card (dashboard carousel) */
+/* 6.5.5 card 314×204: tag 16–40, title cap 54.8, meta cap 78.5, caption cap 106.5, button 146–188, bottom 16
+   → 16+23+11+19.5+5+15.6+15+9+32+42+16 = 204 */
+.task-card { display: grid; grid-template-columns: var(--size-thumb) minmax(0, 1fr); column-gap: var(--space-thumb-text-gap); width: var(--size-task-card-w); height: var(--size-task-card-h); }
+.task-card-body { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.task-card-body .card-title { margin-top: var(--space-task-tag-title); }
+.task-card-body .card-meta { margin-top: var(--space-task-title-meta); }
+.task-card-body .t-caption { margin-top: var(--space-task-meta-caption); }
+.task-card-body .btn { margin-top: var(--space-8); }
+
+/* To Review list row: avatar + check badge · name / role / check-in · gradient link */
+.list-row {
+  display: flex;
+  align-items: flex-start; /* 6.5.8: avatar top-aligned with the 16 padding (top 17.2, bottom inset 34) */
+  gap: var(--space-thumb-text-gap);
+  min-height: var(--size-list-row-h);
+  padding: var(--space-card-pad) var(--space-5) var(--space-card-pad) var(--space-card-pad);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+/* 6.5.8 row 1 cap tops from the row top: name 23.7, role 48.6, check-in 74.3; "Add Review" cap 26.0 (baseline ≈ name's) */
+.list-row-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; margin-top: var(--space-list-body-top); }
+.list-row-title { font: var(--type-list-title); }
+.list-row-sub { font: var(--type-body); color: var(--color-text-secondary-strong); margin-top: var(--space-list-title-sub); }
+.list-row-meta { font: var(--type-meta-sm); color: var(--color-text-tertiary); margin-top: var(--space-list-sub-meta); }
+.list-row-action { flex: none; align-self: flex-start; margin-top: var(--space-list-action-top); }
+
+/* Avatars & thumbs — the background clips to the circle; overlays keep the radius so a badge may hang outside */
+.avatar, .thumb {
+  position: relative;
+  flex: none;
+  width: var(--size-avatar);
+  height: var(--size-avatar);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-pressed);
+}
+.avatar.is-lg, .thumb.is-lg { width: var(--size-thumb-venue); height: var(--size-thumb-venue); }
+.avatar.is-sm, .thumb.is-sm { width: var(--size-name-pill-avatar); height: var(--size-name-pill-avatar); }
+.check-badge {
+  position: absolute;
+  left: calc(var(--size-avatar) / 2 + var(--check-badge-dx) - var(--size-check-badge) / 2);
+  top: calc(var(--size-avatar) / 2 + var(--check-badge-dy) - var(--size-check-badge) / 2);
+  display: grid;
+  place-items: center;
+  width: var(--size-check-badge);
+  height: var(--size-check-badge);
+  border-radius: var(--radius-pill);
+  background: var(--color-check-badge);
+  color: var(--color-check-badge-glyph);
+  box-shadow: 0 0 0 var(--border-w-ring) var(--color-check-badge-ring);
+  z-index: 1;
+}
+
+/* Event image card (Explore feed) */
+.media-card {
+  position: relative;
+  width: 100%;
+  max-width: var(--size-event-card-w);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+.media-card-img { position: relative; height: var(--size-event-card-img-h); }
+.media-card-img > .art { position: absolute; inset: 0; }
+.media-card-img::after { content: ""; position: absolute; inset: 0; background: var(--scrim-card-bottom); pointer-events: none; }
+.media-card .heart-btn { position: absolute; top: var(--heart-button-inset); right: var(--heart-button-inset); z-index: 1; }
+.media-card-body { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4) var(--space-card-pad) var(--space-5); }
+.media-card-title { font: var(--type-list-title-strong); }
+.media-card-meta { font: var(--type-meta); color: var(--color-text-meta); }
+.media-card-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-2); }
+.media-card-caption { position: absolute; left: var(--space-card-pad); right: var(--space-card-pad); bottom: var(--space-card-pad); z-index: 1; }
+
+/* ---------- Hero header (full-bleed art + scrim + title with gradient word) ---------- */
+.hero { position: relative; height: var(--size-hero-explore); overflow: hidden; color: var(--color-text-on-photo); }
+.hero.is-establishments { height: var(--size-hero-establishments); }
+.hero.is-profile { height: var(--size-hero-profile); }
+.hero-art, .hero > .art { position: absolute; inset: 0; }
+.hero-scrim { position: absolute; inset: 0; background: var(--scrim-hero-top), var(--scrim-hero-bottom); pointer-events: none; }
+.hero-actions { position: absolute; top: var(--header-top); right: var(--gutter); z-index: 2; display: flex; gap: var(--space-header-icon-gap); }
+.hero-title {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--space-10);
+  z-index: 2;
+  font: var(--type-display);
+  letter-spacing: var(--tracking-display);
+}
+.hero-title .icon { margin-left: var(--space-1); vertical-align: baseline; }
+/* The gradient proper noun ("Dubai", "influencers") only runs pink → magenta; the violet tail belongs to the
+   trailing chevron, so the letters cover ≈ 0–62 % of --gradient-text (6.5.3 'Dubai' ends #d34ae3, never violet). */
+.hero-title .accent-text, .t-hero .accent-text, .accent-text.is-hero { background-size: var(--gradient-text-hero-span) 100%; background-position: 0 0; }
+
+/* Explore-home filter band — one 380-wide panel (3 × 108 tiles + 2 × 16 gaps + 2 × 12 padding) placed inside a
+   .scroll-x, whose 24 px gutter padding starts the panel at the left gutter and lets it run off the right edge of
+   the screen (6.5.1: the violet band reaches the image edge on rows y 1900–2050 and "Event Typ…" is clipped by the
+   screen, not by a panel corner). */
+.filter-panel { display: flex; gap: var(--filter-tile-gap); padding: var(--filter-panel-pad); border-radius: var(--radius-filter-panel); background: var(--gradient-filter-panel); }
+.scroll-x > .filter-panel { flex: none; }
+.filter-tile {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: var(--size-filter-tile-w);
+  height: var(--size-filter-tile-h);
+  padding: var(--space-3);
+  border-radius: var(--radius-filter-tile);
+  background: var(--color-filter-tile);
+  color: var(--color-text-primary);
+  font: var(--type-body);
+}
+.filter-tile:active { background: var(--color-filter-tile-pressed); }
+
+/* ---------- Divider ---------- */
+.divider { height: var(--border-w-hairline); background: var(--color-divider); }
+.divider.is-section { margin: var(--space-section) 0; }
+
+/* ---------- Tab bar (role-agnostic) ---------- */
+.tabbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 4;
+  display: flex;
+  height: var(--size-tabbar-h);
+  padding-bottom: var(--home-area-h);
+  border-radius: var(--radius-tabbar-top) var(--radius-tabbar-top) 0 0;
+  background: var(--color-bg-tabbar);
+}
+.tabbar.is-static { position: relative; }
+.tab {
+  position: relative;
+  isolation: isolate; /* own stacking context so the glow can sit at z -1, under the label text */
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tab-label-gap);
+  height: var(--size-tabbar-content-h);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-tab-inactive);
+  font: var(--type-tab-label);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--duration-base) var(--ease-standard);
+}
+.tab-icon { position: relative; display: grid; place-items: center; width: var(--icon-size-tab); height: var(--icon-size-tab); }
+.tab-icon .icon { position: relative; z-index: 1; width: var(--icon-size-tab); height: var(--icon-size-tab); }
+.tab-dot {
+  position: absolute;
+  top: calc(-1 * var(--space-1) / 2);
+  right: calc(-1 * var(--space-1) / 2);
+  z-index: 2;
+  width: var(--size-tab-dot);
+  height: var(--size-tab-dot);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-badge);
+}
+.tab.is-active { color: var(--color-text-tab-active); }
+.tab.is-active .tab-icon { color: var(--color-accent-tab); }
+/* Glow: peak .50 at the icon centre, reaching the bar colour ≈130 px across (measured), so the 104 px
+   token box is drawn at ×1.25 and alpha-masked to fade out at its edge instead of clipping to a disc.
+   z-index -1 inside the isolated .tab keeps it under the label (6.5.1-1 active label is pure white, not
+   white seen through the glow). */
+.tab.is-active .tab-icon::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%; top: 50%;
+  width: calc(var(--glow-tab-size) * 1.25);
+  height: calc(var(--glow-tab-size) * 1.25);
+  margin: calc(var(--glow-tab-size) * -0.625) 0 0 calc(var(--glow-tab-size) * -0.625);
+  border-radius: var(--radius-pill);
+  background: var(--glow-tab);
+  -webkit-mask-image: radial-gradient(closest-side, currentColor 25%, transparent 100%);
+  mask-image: radial-gradient(closest-side, currentColor 25%, transparent 100%);
+  pointer-events: none;
+}
+/* Active icon = same silhouette, filled; inner details become cut-outs in the bar colour */
+.tab.is-active .tab-icon .icon { fill: currentColor; }
+.tab.is-active .icon-zap-square path,
+.tab.is-active .icon-calendar-check path:last-child,
+.tab.is-active .icon-ticket path:not(:first-child),
+.tab.is-active .icon-inbox polyline { stroke: var(--color-bg-tabbar); }
+.tab.is-active .icon-inbox polyline { fill: var(--color-bg-tabbar); }
+.tab.is-active .icon-qr-code path { stroke: var(--color-accent-tab); }
+.tabbar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: var(--home-indicator-bottom);
+  width: var(--home-indicator-w);
+  height: var(--home-indicator-h);
+  margin-left: calc(var(--home-indicator-w) / -2);
+  border-radius: var(--radius-pill);
+  background: var(--color-text-primary);
+}
+
+/* ---------- Bottom sheet ---------- */
+.sheet-backdrop { position: absolute; inset: 0; z-index: 8; background: var(--scrim-sheet); }
+.sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 9;
+  padding: var(--space-3) var(--sheet-pad) calc(var(--sheet-pad) + var(--home-area-h));
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--color-surface-sheet);
+  color: var(--color-text-primary);
+}
+.sheet-grabber { width: var(--size-sheet-grabber-w); height: var(--size-sheet-grabber-h); margin: 0 auto var(--space-5); border-radius: var(--radius-pill); background: var(--color-sheet-grabber); }
+.sheet-title { font: var(--type-title-strong); }
+.sheet-sub { font: var(--type-meta); color: var(--color-text-meta); margin-top: var(--space-1); }
+.sheet-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.sheet .btn-block { margin-top: var(--space-6); }
+
+/* Form field (sheets, auth) */
+.field-label { display: block; font: var(--type-body); color: var(--color-text-secondary); margin-bottom: var(--space-2); }
+.field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--size-field-h);
+  padding: var(--space-4);
+  border-radius: var(--radius-field);
+  border: var(--border-w-hairline) solid var(--color-field-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font: var(--type-body);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.field.is-textarea { align-items: flex-start; min-height: calc(var(--size-field-h) * 2); }
+.field:focus-within, .field.is-focus { border-color: var(--color-field-focus); }
+.field-placeholder, .field::placeholder { color: var(--color-text-muted); }
+.field input, .field textarea { flex: 1 1 auto; min-width: 0; border: 0; background: transparent; outline: 0; padding: 0; resize: none; }
+
+/* Guest-count stepper */
+.stepper { display: inline-flex; align-items: center; gap: var(--space-4); }
+.stepper-btn { display: grid; place-items: center; flex: none; width: var(--touch-target); height: var(--touch-target); border-radius: var(--radius-pill); background: var(--color-surface-elevated); color: var(--color-text-primary); }
+.stepper-btn:active { background: var(--color-surface-pressed); }
+.stepper-value { min-width: var(--space-6); text-align: center; font: var(--type-title-strong); }
+
+/* ---------- Abstract card imagery (no photography) ---------- */
+.art { position: relative; background-color: var(--color-surface); background-image: var(--art-highlight); }
+.art::before, .art::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.art::before { background: var(--art-highlight); }
+.art-dining { background-image: var(--art-dining); }
+.art-nightlife { background-image: var(--art-nightlife); }
+.art-beach { background-image: var(--art-beach); }
+.art-wellness { background-image: var(--art-wellness); }
+.art-beauty { background-image: var(--art-beauty); }
+.art-fitness { background-image: var(--art-fitness); }
+.art-rooftop { background-image: var(--art-rooftop); }
+.art-cafe { background-image: var(--art-cafe); }
+.art-lines::after { background: var(--art-lines); }
+.art-fitness::after { background: var(--art-stripes); }
+.art-rooftop::after { background: var(--art-skyline); }
+.art-beach::after { background: var(--art-glare); }
+.art-wellness::after { background: var(--art-rings); }
+.art-beauty::after { background: var(--art-sheen); }
+.art-nightlife::after { background: var(--art-beams); }
+.art-portrait::before { background: var(--art-portrait-shadow), var(--art-highlight); }

@@ -1,0 +1,243 @@
+/* base.css — The Secret Society demo · reset, phone frame, status bar, typography roles, utilities.
+   Every colour, size, radius and font is a token from css/tokens.css (see DESIGN_TOKENS.md). */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { margin: 0; padding: 0; }
+body {
+  min-height: 100%;
+  background: var(--color-marketing-bg);
+  color: var(--color-text-primary);
+  font: var(--type-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+button, input, textarea, select { font: inherit; color: inherit; margin: 0; }
+button { background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+img, svg, video { display: block; max-width: 100%; }
+:focus-visible { outline: var(--border-w-ring) solid var(--color-field-focus); outline-offset: var(--border-w-ring); }
+:focus:not(:focus-visible) { outline: 0; }
+::selection { background: var(--color-accent); color: var(--color-text-on-accent); }
+
+/* ---------- Phone frame ---------- */
+/* .stage centres one .phone on desktop; below 430 px the phone is the viewport. */
+.stage {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--phone-bezel-w) + var(--space-6)) var(--space-6);
+}
+.phone {
+  position: relative;
+  flex: none;
+  width: var(--frame-w);
+  height: var(--frame-h);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-phone);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    0 0 0 var(--phone-bezel-w) var(--color-phone-bezel),
+    0 0 0 calc(var(--phone-bezel-w) + var(--border-w-hairline)) var(--color-phone-bezel-edge),
+    var(--shadow-phone);
+}
+.phone-island {
+  position: absolute;
+  top: var(--island-top);
+  left: 50%;
+  width: var(--size-island-w);
+  height: var(--size-island-h);
+  margin-left: calc(var(--size-island-w) / -2);
+  border-radius: var(--radius-pill);
+  background: var(--color-island);
+  z-index: 6;
+  pointer-events: none;
+}
+/* Scrollable app surface; the status bar and tab bar float above it. */
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.has-tabbar { padding-bottom: calc(var(--size-tabbar-h) + var(--space-6)); }
+.screen.no-scroll { overflow: hidden; }
+.screen.pad-top { padding-top: var(--status-bar-h); }
+
+@media (max-width: 430px) {
+  body { background: var(--color-bg); }
+  .stage { padding: 0; align-items: stretch; }
+  .phone { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; box-shadow: none; }
+  .phone-island { display: none; }
+}
+
+/* ---------- Fake iOS status bar ---------- */
+.statusbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: var(--status-bar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--statusbar-pad-r) 0 var(--statusbar-pad-l);
+  font: var(--type-status-bar);
+  color: var(--color-statusbar);
+  z-index: 5;
+  pointer-events: none;
+}
+.statusbar-time { letter-spacing: var(--tracking-display); }
+.statusbar-icons { display: flex; align-items: center; gap: calc(var(--space-2) - var(--border-w-hairline)); }
+.statusbar-icons svg { display: block; fill: currentColor; }
+
+/* ---------- Safe area / home indicator ---------- */
+.home-bar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--home-area-h);
+  pointer-events: none;
+  z-index: 10; /* above sheets (z 9) and the tab bar (z 4), like the real indicator */
+}
+.home-bar::after, .home-indicator {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: var(--home-indicator-bottom);
+  width: var(--home-indicator-w);
+  height: var(--home-indicator-h);
+  margin-left: calc(var(--home-indicator-w) / -2);
+  border-radius: var(--radius-pill);
+  background: var(--color-text-primary);
+}
+.safe-bottom { padding-bottom: var(--home-area-h); }
+
+/* ---------- Typography roles ---------- */
+.t-display-xl { font: var(--type-display-xl); letter-spacing: var(--tracking-display); }
+.t-display { font: var(--type-display); letter-spacing: var(--tracking-display); }
+.t-display-sm { font: var(--type-display-sm); }
+.t-display-sm-light { font: var(--type-display-sm-light); }
+.t-hero { font: var(--type-hero-headline); letter-spacing: var(--tracking-display); }
+.t-h1 { font: var(--type-title); }
+.t-h1-strong { font: var(--type-title-strong); }
+.t-h2 { font: var(--type-h2); }
+.t-list-title { font: var(--type-list-title); }
+.t-list-title-strong { font: var(--type-list-title-strong); }
+.t-count { font: var(--type-count); }
+.t-card-title { font: var(--type-card-title); }
+.t-section-link { font: var(--type-section-link); color: var(--color-text-secondary); }
+.t-body { font: var(--type-body); }
+.t-meta { font: var(--type-meta); color: var(--color-text-meta); }
+.t-meta-sm { font: var(--type-meta-sm); color: var(--color-text-tertiary); }
+.t-caption { font: var(--type-caption-upper); letter-spacing: var(--tracking-upper-wide); text-transform: uppercase; }
+.t-label { font: var(--type-label-upper); letter-spacing: var(--tracking-upper); text-transform: uppercase; }
+.t-tag { font: var(--type-tag-upper); letter-spacing: var(--tracking-upper); text-transform: uppercase; }
+.t-stat-number { font: var(--type-stat-number); }
+.t-big-stat { font: var(--type-big-stat); }
+.t-status { font: var(--type-status-bar); }
+/* "The Secret Society" wordmark placeholder — plain text in the heading face, never a logo. */
+.wordmark { font: var(--type-display-sm); letter-spacing: var(--tracking-display); color: var(--color-text-primary); white-space: nowrap; }
+
+/* Gradient-filled text (hero proper noun, "45 Events found", captions). */
+.accent-text, .t-gradient {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Text colour utilities */
+.c-primary { color: var(--color-text-primary); }
+.c-meta { color: var(--color-text-meta); }
+.c-secondary-strong { color: var(--color-text-secondary-strong); }
+.c-secondary { color: var(--color-text-secondary); }
+.c-tertiary { color: var(--color-text-tertiary); }
+.c-muted { color: var(--color-text-muted); }
+/* Icons in grey text take the opaque canvas equivalent: with white-alpha strokes, overlapping sub-paths
+   (refresh-cw arrowheads, the ↗ corner) compound to ≈.84 and read as bright spots; the reference refresh
+   glyph is a flat #969696–#a2a2a2 along its whole length (6.5.5). */
+.c-secondary .icon, .t-section-link .icon { color: var(--color-text-secondary-hex); }
+.c-tertiary .icon { color: var(--color-text-tertiary-hex); }
+.c-muted .icon { color: var(--color-text-muted-hex); }
+.c-disabled { color: var(--color-text-disabled); }
+.c-success { color: var(--color-success); }
+.c-danger { color: var(--color-danger-text); }
+.c-green { color: var(--color-green); }
+.c-accent { color: var(--color-accent-tab); }
+
+/* ---------- Layout utilities ---------- */
+.stack { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.row-start { display: flex; align-items: flex-start; }
+.wrap { flex-wrap: wrap; }
+.center { align-items: center; justify-content: center; }
+.grow { flex: 1 1 auto; min-width: 0; }
+.shrink-0 { flex: none; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+.mt-10 { margin-top: var(--space-10); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mt-section { margin-top: var(--space-section); }
+.mt-block { margin-top: var(--space-block); }
+.mt-title { margin-top: var(--space-title-to-content); }
+/* Side gutters: 24 each side → 342 content column. */
+.gutter, .section { padding-left: var(--gutter); padding-right: var(--gutter); }
+/* To Review is the one screen with a 15 left gutter (6.5.8 rows and segmented span x 147–1071 = 354 CSS on the
+   393 pt screen, 15 left / 24 right); rows and the 3-up .seg keep width: 100% and render 351 wide in the 390 frame. */
+.section.is-review { padding-left: var(--gutter-review-left); }
+.content { width: var(--content-w); max-width: 100%; margin-left: auto; margin-right: auto; }
+.full-bleed { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
+/* Horizontal scroller that starts at the gutter and lets the last item peek out (chips, date pills, carousels). */
+.scroll-x {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+  scroll-padding-left: var(--gutter);
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
+.scroll-x > * { flex: none; scroll-snap-align: start; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.text-center { text-align: center; }
+.relative { position: relative; }
+.hidden, [hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+/* Any interactive element gets at least a 44 px tall hit area via .hit (visual size unchanged). */
+.hit { position: relative; }
+.hit::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch-target); transform: translateY(-50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

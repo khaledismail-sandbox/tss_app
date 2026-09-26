@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>TSS demo · Style tile (Gate 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tss-demo/css/tokens.css">
+<link rel="stylesheet" href="/tss-demo/css/base.css">
+<link rel="stylesheet" href="/tss-demo/css/components.css">
+<script src="/tss-demo/js/icons.js"></script>
+<style>
+  /* Style-tile chrome only (debug page). */
+  .tile-body { padding: var(--space-10) var(--space-8) calc(var(--space-14) * 2); background: var(--color-marketing-bg); }
+  .tile { max-width: 1120px; margin: 0 auto; }
+  .tile-head { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-8); }
+  .tile-head h1 { font: var(--type-title); color: var(--color-text-secondary); }
+  .tile-head p { font: var(--type-meta); color: var(--color-text-tertiary); max-width: 720px; }
+  .ts { margin-top: var(--space-14); padding-top: var(--space-6); border-top: var(--border-w-hairline) solid var(--color-divider); }
+  .ts-title { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-6); font: var(--type-h2); }
+  .ts-title small { font: var(--type-meta); color: var(--color-text-meta); font-family: var(--font-mono); }
+  .ts-note { font: var(--type-meta); color: var(--color-text-tertiary); margin: calc(-1 * var(--space-4)) 0 var(--space-5); max-width: 760px; }
+  .label { font: var(--type-meta-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2); font-family: var(--font-mono); }
+  .sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: var(--space-3); }
+  .sw-grid.is-wide { grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); }
+  .sw { border-radius: var(--radius-sm); overflow: hidden; background: var(--color-surface); }
+  .sw-box { position: relative; height: 64px; background: var(--color-surface); }
+  .sw-box.on-bg { background: var(--color-bg); }
+  .sw-box.on-tabbar { background: var(--color-bg-tabbar); }
+  .sw-fill { position: absolute; inset: 0; }
+  .sw-box.on-art { background-image: var(--art-rooftop); }
+  .sw-box.glow .sw-fill { inset: auto; left: 50%; top: 50%; width: var(--glow-tab-size); height: var(--glow-tab-size); margin: calc(var(--glow-tab-size) / -2) 0 0 calc(var(--glow-tab-size) / -2); border-radius: var(--radius-pill); }
+  .sw-label { display: flex; flex-direction: column; gap: 2px; padding: var(--space-2) var(--space-3) var(--space-3); font-family: var(--font-mono); }
+  .sw-name { font: var(--type-meta-sm); font-family: var(--font-mono); color: var(--color-text-primary); }
+  .sw-val { font: var(--type-meta-sm); font-family: var(--font-mono); color: var(--color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sw-note { font: var(--type-meta-sm); color: var(--color-text-muted); }
+  .tr { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--space-6); align-items: baseline; padding: var(--space-3) 0; border-bottom: var(--border-w-hairline) solid var(--color-divider); }
+  .tr-sample { min-width: 0; overflow-wrap: anywhere; }
+  .tr-spec { font: var(--type-meta-sm); font-family: var(--font-mono); color: var(--color-text-tertiary); }
+  .tr-spec b { color: var(--color-text-secondary-strong); font-weight: var(--fw-medium); }
+  .demo { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-8) var(--space-10); }
+  .demo-block { display: flex; flex-direction: column; gap: var(--space-2); }
+  .canvas { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); padding: var(--space-6); border-radius: var(--radius-lg); background: var(--color-bg); }
+  .canvas.is-col { flex-direction: column; align-items: stretch; flex-wrap: nowrap; }
+  .canvas.is-column-w { width: calc(var(--content-w) + 2 * var(--space-6)); }
+  .canvas.on-surface { background: var(--color-surface); }
+  .col { width: var(--content-w); display: flex; flex-direction: column; }
+  .phones { display: flex; flex-wrap: wrap; gap: var(--space-10) var(--space-8); align-items: flex-start; }
+  .phone-wrap { display: flex; flex-direction: column; gap: var(--space-3); padding: calc(var(--phone-bezel-w) + var(--space-1)); }
+  .phone-wrap .label { text-align: center; margin: 0; }
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, 72px); gap: var(--space-3); }
+  .icon-cell { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-3) 0; border-radius: var(--radius-sm); background: var(--color-surface); }
+  .icon-cell span { font: var(--type-meta-sm); font-family: var(--font-mono); color: var(--color-text-tertiary); max-width: 68px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .status-demo { position: relative; width: var(--frame-w); height: var(--status-bar-h); background: var(--color-bg); border-radius: var(--radius-sm); overflow: hidden; }
+  .status-demo .statusbar { position: absolute; }
+</style>
+</head>
+<body class="tile-body">
+<main class="tile">
+  <header class="tile-head">
+    <div class="wordmark">The Secret Society</div>
+    <h1>Style tile · Gate 1 — tokens, type, components</h1>
+    <p>Dark-only design system for the 390×844 phone-frame recreation. Everything on this page is rendered from <code>css/tokens.css</code>, <code>css/base.css</code>, <code>css/components.css</code> and <code>js/icons.js</code> — no page-specific colours. Card imagery is CSS gradients; the wordmark is plain text in the heading face (Plus Jakarta Sans 600).</p>
+  </header>
+
+  <!-- 01 Palette -->
+  <section class="ts" id="palette">
+    <h2 class="ts-title">01 · Palette <small>tokens.css — value read live from the stylesheet</small></h2>
+    <div class="label">Canvas · surfaces · borders</div>
+    <div class="sw-grid" id="sw-surfaces"></div>
+    <div class="label mt-6">Text</div>
+    <div class="sw-grid" id="sw-text"></div>
+    <div class="label mt-6">Accent · status</div>
+    <div class="sw-grid" id="sw-accent"></div>
+    <div class="label mt-6">Gradients · glow · scrim</div>
+    <div class="sw-grid is-wide" id="sw-gradients"></div>
+  </section>
+
+  <!-- 02 Type scale -->
+  <section class="ts" id="type">
+    <h2 class="ts-title">02 · Type scale <small>Plus Jakarta Sans 400/500/600/700 · status bar in the system font</small></h2>
+    <div id="type-rows"></div>
+  </section>
+
+  <!-- 03 Buttons -->
+  <section class="ts" id="buttons">
+    <h2 class="ts-title">03 · Buttons <small>.btn · .icon-btn · .fab · .link-gradient · .heart-btn · .swipe-btn</small></h2>
+    <div class="demo">
+      <div class="demo-block">
+        <div class="label">.btn-primary (w108 / w145 wide) · .btn-secondary · .btn-ghost · :disabled</div>
+        <div class="canvas">
+          <button class="btn btn-primary w-accept">Accept</button>
+          <button class="btn btn-primary is-wide w-start">Start Swiping</button>
+          <button class="btn btn-secondary w-accept">Decline</button>
+          <button class="btn btn-secondary">More Details</button>
+          <button class="btn btn-ghost">Cancel</button>
+          <button class="btn" disabled>Show Event List</button>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.btn-sm · .btn-lg.btn-block (sheet CTA h48 r14) · .btn-row.is-wide</div>
+        <div class="canvas is-col is-column-w">
+          <div class="row gap-3"><button class="btn btn-sm btn-secondary">Show full Calendar</button><button class="btn btn-sm btn-primary">Apply</button></div>
+          <button class="btn btn-primary btn-lg btn-block">Send application</button>
+          <div class="btn-row is-wide"><button class="btn btn-secondary">More Details</button><button class="btn btn-secondary">Managers</button></div>
+          <button class="btn btn-block" disabled>Show Event List</button>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.icon-btn ⌀50 · search 26 / bell 22 (+badge) / back / sort / layout (.is-pill 55×42, server 15) / pencil / menu · .heart-btn · .fab</div>
+        <div class="canvas">
+          <button class="icon-btn" aria-label="Search"><i data-icon="search" data-size="26"></i></button>
+          <button class="icon-btn" aria-label="Notifications"><i data-icon="bell" data-size="22" data-stroke="bold"></i><span class="icon-btn-badge">30</span></button>
+          <button class="icon-btn" aria-label="Back"><i data-icon="arrow-left" data-size="28" data-stroke="back"></i></button>
+          <button class="icon-btn" aria-label="Sort"><i data-icon="arrow-down-wide-narrow" data-size="26"></i></button>
+          <button class="icon-btn is-pill" aria-label="Layout"><i data-icon="server" data-size="15"></i></button>
+          <button class="icon-btn" aria-label="Edit"><i data-icon="pencil" data-size="24"></i></button>
+          <button class="icon-btn" aria-label="Menu"><i data-icon="menu" data-size="26"></i></button>
+          <button class="heart-btn" aria-label="Save"><i data-icon="heart" data-size="17" data-stroke="bold"></i></button>
+          <button class="heart-btn is-liked" aria-label="Saved"><i data-icon="heart" data-size="17" data-stroke="bold"></i></button>
+          <button class="fab" aria-label="Create"><i data-icon="plus" data-size="24" data-stroke="heavy"></i></button>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.link-gradient (rule 6 below the baseline) · .section-link (19 px arrow) · .accent-text · .swipe-btn</div>
+        <div class="canvas">
+          <a class="link-gradient" href="#">Add Review</a>
+          <a class="section-link" href="#">See All <i data-icon="arrow-up-right" data-size="19"></i></a>
+          <span class="t-count accent-text">45 Events found</span>
+          <div class="swipe-actions">
+            <button class="swipe-btn is-x" aria-label="Pass"><i data-icon="x" data-size="24" data-stroke="bold"></i></button>
+            <button class="swipe-btn is-check" aria-label="Invite"><i data-icon="check" data-size="28" data-stroke="heavy"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">Icon set — Lucide 1.6 px non-scaling strokes + sliders / zap-square drawn in the same grammar</div>
+        <div class="icon-grid" id="icon-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Chips, tags, badges, segmented, toggle, date pills -->
+  <section class="ts" id="controls">
+    <h2 class="ts-title">04 · Chips · tags · badges · segmented · toggle · date pills</h2>
+    <div class="demo">
+      <div class="demo-block">
+        <div class="label">.chip h42 pad 18, 17 px leading icon (+ ⌀17 .chip-badge) · .icon-btn.is-pill layout toggle (same height) · .tag 8px pad 12 · .tag-teal / .tag-red / .tag-teal-solid 9.5px · .badge h20 pad 4 · .badge-dot</div>
+        <div class="canvas is-col">
+          <div class="chip-row">
+            <button class="chip"><i data-icon="sliders" data-size="17"></i>Filters <span class="chip-badge">2</span></button>
+            <button class="chip"><i data-icon="arrow-down-wide-narrow" data-size="17"></i>Sort by</button>
+            <button class="icon-btn is-pill" aria-label="Layout"><i data-icon="server" data-size="15"></i></button>
+            <button class="chip">Location</button>
+            <button class="chip">Date</button>
+            <button class="chip is-active">Category</button>
+          </div>
+          <div class="row gap-4 wrap">
+            <div class="tag-row"><span class="tag">Bar</span><span class="tag">Beach Cafe</span><span class="tag">Restaurant</span></div>
+            <span class="tag tag-teal">Open for swipe</span>
+            <span class="tag tag-red">Under review</span>
+            <span class="tag tag-teal-solid">Open for swipe</span>
+          </div>
+          <div class="row gap-4">
+            <span class="badge">24</span><span class="badge">2</span><span class="badge">120</span><span class="badge-dot"></span>
+            <span class="header-group"><span class="header-back-title">To Review</span><span class="badge">24</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.seg r17 (2 segments 10px · 3 segments .is-3up 10.5px, 342 wide) · .toggle-bar r17 · .toggle</div>
+        <div class="canvas is-col is-column-w">
+          <div class="seg"><button class="seg-item is-active">Establishments</button><button class="seg-item">Brands</button></div>
+          <div class="seg is-3up"><button class="seg-item">Checked in</button><button class="seg-item is-active">Checked out</button><button class="seg-item">No show</button></div>
+          <div class="toggle-bar"><span class="toggle-bar-label">Pending Invites</span><button class="toggle" role="switch" aria-checked="false" aria-label="Show interest shown"></button><span class="toggle-bar-label is-inactive">Interest Shown</span></div>
+          <div class="row gap-4"><button class="toggle" role="switch" aria-checked="false" aria-label="left"></button><button class="toggle is-right" role="switch" aria-checked="true" aria-label="right"></button><button class="toggle is-off" role="switch" aria-checked="false" aria-label="off"></button></div>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.date-panel › .date-strip › .date-pill (+ .is-selected) · .calendar-pill · .t-count.accent-text</div>
+        <div class="canvas is-col is-column-w" style="padding-left:0;padding-right:0;gap:0">
+          <div class="date-panel">
+            <div class="scroll-x date-strip">
+              <button class="date-pill"><span class="date-pill-digit">28</span><span class="date-pill-month">May</span><span class="date-pill-day">Thu</span></button>
+              <button class="date-pill is-selected"><span class="date-pill-digit">29</span><span class="date-pill-month">May</span><span class="date-pill-day">Fri</span></button>
+              <button class="date-pill"><span class="date-pill-digit">30</span><span class="date-pill-month">May</span><span class="date-pill-day">Sat</span></button>
+              <button class="date-pill"><span class="date-pill-digit">1</span><span class="date-pill-month">Jun</span><span class="date-pill-day">Sun</span></button>
+              <button class="date-pill"><span class="date-pill-digit">2</span><span class="date-pill-month">Jun</span><span class="date-pill-day">Mon</span></button>
+            </div>
+          </div>
+          <button class="calendar-pill">Show full Calendar</button>
+          <div class="section mt-8"><span class="t-count accent-text">45 Events found</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Stat tiles + dashboard tiles -->
+  <section class="ts" id="tiles">
+    <h2 class="ts-title">05 · Stat tiles · dashboard tiles <small>.stat-tile (+ .gradient, .badge-dot) · .dash-tile (+ .is-create)</small></h2>
+    <div class="demo">
+      <div class="demo-block">
+        <div class="label">My Events — 4-up 72×84 r17, gap 15, label 10.5/500, ⌀8 dot on the corner, divider 32 below</div>
+        <div class="canvas is-col is-column-w">
+          <div class="stat-row">
+            <div class="stat-tile gradient"><span class="badge-dot"></span><span class="stat-tile-number">82</span><span class="stat-tile-label">Requests</span></div>
+            <div class="stat-tile"><span class="badge-dot"></span><span class="stat-tile-number">12</span><span class="stat-tile-label">To confirm</span></div>
+            <div class="stat-tile"><span class="stat-tile-number">3</span><span class="stat-tile-label">To review</span></div>
+            <div class="stat-tile"><span class="stat-tile-number">1</span><span class="stat-tile-label">To visit</span></div>
+          </div>
+          <div class="divider mt-8"></div>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">Venue dashboard — 3×2 100×100 r22, 26 px icon square, arrow-up-right (18 box ≈ 9 px ink) in meta grey, Create tile with gradient border + 70° deep square</div>
+        <div class="canvas is-col is-column-w">
+          <div class="dash-grid">
+            <a class="dash-tile" href="#"><span class="dash-tile-icon is-red">0</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Under<br>Review</span></a>
+            <a class="dash-tile" href="#"><span class="dash-tile-icon is-teal">3</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Upcoming<br>Events</span></a>
+            <a class="dash-tile" href="#"><span class="dash-tile-icon is-green">1</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Open for<br>swipe</span></a>
+            <a class="dash-tile" href="#"><span class="dash-tile-icon is-purple">0</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Happening<br>now</span></a>
+            <a class="dash-tile" href="#"><span class="dash-tile-icon is-neutral">8</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Past<br>Events</span></a>
+            <a class="dash-tile is-create" href="#"><span class="dash-tile-icon is-accent"><i data-icon="plus" data-size="16" data-stroke="heavy"></i></span><span class="dash-tile-label">Create<br>New Event</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 Cards -->
+  <section class="ts" id="cards">
+    <h2 class="ts-title">06 · Cards <small>.media-card · .invite-card · .card / .task-card · .art-*</small></h2>
+    <div class="demo">
+      <div class="demo-block">
+        <div class="label">.media-card — 342 wide r30, art 256, ⌀48 heart (17 box, ≈15 glyph) inset 20, scrim into the card body</div>
+        <div class="canvas">
+          <article class="media-card">
+            <div class="media-card-img">
+              <div class="art art-nightlife"></div>
+              <button class="heart-btn" aria-label="Save"><i data-icon="heart" data-size="17" data-stroke="bold"></i></button>
+            </div>
+            <div class="media-card-body">
+              <h3 class="media-card-title">Mauvais Garçon Night</h3>
+              <div class="media-card-meta">Peabeach<span class="sep">•</span>Dubai Marina<span class="sep">•</span>Sat 8 Jun<span class="sep">•</span>9:00 PM</div>
+              <div class="media-card-foot"><span class="tag tag-teal">Complimentary<span class="sep">•</span>2 guests</span><span class="t-meta-sm">12 spots left</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.invite-card — 342×138 r30, ⌀50 thumb, title / meta, Decline | Accept · .card.task-card</div>
+        <div class="canvas is-col is-column-w">
+          <article class="card invite-card">
+            <div class="thumb art art-wellness"></div>
+            <div class="invite-card-body">
+              <h3 class="card-title">Hot Yoga Class</h3>
+              <div class="card-meta">25 May 2023<span class="sep">•</span>8:00 AM<span class="sep">•</span>2 Hrs</div>
+              <div class="invite-card-actions"><button class="btn btn-secondary w-accept">Decline</button><button class="btn btn-primary w-accept">Accept</button></div>
+            </div>
+          </article>
+          <article class="card task-card">
+            <div class="thumb art art-beach"></div>
+            <div class="task-card-body">
+              <span class="tag tag-teal">Open for swipe</span>
+              <h3 class="card-title">Pool &amp; Beach Access</h3>
+              <div class="card-meta">25 May 2023<span class="sep">•</span>1:00 PM<span class="sep">•</span>2 Hrs</div>
+              <span class="t-caption">20 mins left</span>
+              <button class="btn btn-primary is-wide w-start">Start Swiping</button>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="demo-block">
+        <div class="label">.art-* recipes at thumb and card size (dining · nightlife · beach · wellness · beauty · fitness · rooftop · café)</div>
+        <div class="canvas" id="art-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 List row -->
+  <section class="ts" id="list">
+    <h2 class="ts-title">07 · List row <small>.list-row · .avatar + .check-badge · .link-gradient — in the To Review column (.section.is-review: 15 left gutter, rows 351 wide)</small></h2>
+    <div class="demo">
+      <div class="canvas is-col is-column-w section is-review">
+        <div class="list-row">
+          <div class="avatar art art-beauty art-portrait"><span class="check-badge"><i data-icon="check" data-size="14" data-stroke="badge"></i></span></div>
+          <div class="list-row-body"><div class="list-row-title">Romain Fourel</div><div class="list-row-sub">Influencer</div><div class="list-row-meta">Check in 10:21 PM out 11:24 PM</div></div>
+          <a class="link-gradient list-row-action" href="#">Add Review</a>
+        </div>
+        <div class="list-row">
+          <div class="avatar art art-dining art-portrait"><span class="check-badge"><i data-icon="check" data-size="14" data-stroke="badge"></i></span></div>
+          <div class="list-row-body"><div class="list-row-title">Sara Capriotti</div><div class="list-row-sub">Influencer</div><div class="list-row-meta">Check in 10:21 PM out 11:24 PM</div></div>
+          <a class="link-gradient list-row-action" href="#">Add Review</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 + 09 Phone frames -->
+  <section class="ts" id="phones">
+    <h2 class="ts-title">08 · Tab bars &nbsp;·&nbsp; 09 · Bottom sheet <small>.phone › .statusbar · .screen · .tabbar · .sheet — real proportions</small></h2>
+    <p class="ts-note">Left: blogger tab bar (Explore active, My Events dot) under the “Hi, Sara” header pill; the filter band starts at the gutter and runs off the right edge. Middle: venue-manager tab bar (Dashboard active) with the “Hi, Omar” pill, task card and dashboard tiles. Right: the Apply sheet over a dimmed Explore feed.</p>
+    <div class="phones">
+
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-island"></div>
+          <div class="statusbar" data-statusbar></div>
+          <div class="screen has-tabbar">
+            <div class="header">
+              <div class="header-pill"><span class="header-pill-avatar"><i data-icon="user-round" data-size="27"></i></span>Hi, Sara<i data-icon="chevron-down" data-size="16"></i></div>
+              <span class="grow"></span>
+              <button class="icon-btn" aria-label="Search"><i data-icon="search" data-size="26"></i></button>
+              <button class="icon-btn" aria-label="Notifications"><i data-icon="bell" data-size="22" data-stroke="bold"></i><span class="icon-btn-badge">30</span></button>
+            </div>
+            <div class="section mt-8 section-head"><h2 class="t-h2">Featured Events</h2><a class="section-link" href="#">See All <i data-icon="arrow-up-right" data-size="19"></i></a></div>
+            <div class="section mt-4">
+              <article class="media-card">
+                <div class="media-card-img">
+                  <div class="art art-rooftop"></div>
+                  <button class="heart-btn" aria-label="Save"><i data-icon="heart" data-size="17" data-stroke="bold"></i></button>
+                </div>
+                <div class="media-card-body">
+                  <h3 class="media-card-title">Sunset Sessions</h3>
+                  <div class="media-card-meta">The Secret Society Resort<span class="sep">•</span>Fri 7 Jun<span class="sep">•</span>6:30 PM</div>
+                  <div class="media-card-foot"><span class="tag tag-teal">Complimentary<span class="sep">•</span>1 guest</span><span class="t-meta-sm">8 spots left</span></div>
+                </div>
+              </article>
+            </div>
+            <div class="scroll-x mt-6">
+              <div class="filter-panel">
+                <button class="filter-tile"><i data-icon="calendar" data-size="24"></i>When</button>
+                <button class="filter-tile"><i data-icon="map-pin" data-size="24"></i>Where</button>
+                <button class="filter-tile"><i data-icon="star" data-size="24"></i>Event Type</button>
+              </div>
+            </div>
+          </div>
+          <nav class="tabbar" aria-label="Blogger">
+            <a class="tab is-active" href="#"><span class="tab-icon"><i data-icon="zap-square" data-size="26"></i></span>Explore</a>
+            <a class="tab" href="#"><span class="tab-icon"><i data-icon="calendar-check" data-size="26"></i><span class="tab-dot"></span></span>My Events</a>
+            <a class="tab" href="#"><span class="tab-icon"><i data-icon="user-round" data-size="26"></i></span>Profile</a>
+          </nav>
+        </div>
+        <div class="label">Blogger · Explore · My Events · Profile</div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-island"></div>
+          <div class="statusbar" data-statusbar></div>
+          <div class="screen has-tabbar">
+            <div class="header">
+              <div class="header-pill"><span class="header-pill-avatar"><i data-icon="briefcase" data-size="27"></i></span>Hi, Omar</div>
+              <span class="grow"></span>
+              <button class="icon-btn" aria-label="Search"><i data-icon="search" data-size="26"></i></button>
+              <button class="icon-btn" aria-label="Notifications"><i data-icon="bell" data-size="22" data-stroke="bold"></i></button>
+            </div>
+            <div class="section mt-5 row center gap-2 c-secondary"><i data-icon="refresh-cw" data-size="12"></i><span class="t-meta c-secondary">Last updated : 31 Jan 24 2:34 PM</span></div>
+            <div class="section mt-8 section-head"><h2 class="t-h2">Your Tasks</h2><a class="section-link" href="#">See All <i data-icon="arrow-up-right" data-size="19"></i></a></div>
+            <div class="scroll-x mt-title" style="gap:12px">
+              <article class="card task-card">
+                <div class="thumb art art-beach"></div>
+                <div class="task-card-body">
+                  <span class="tag tag-teal">Open for swipe</span>
+                  <h3 class="card-title">Pool &amp; Beach Access</h3>
+                  <div class="card-meta">25 May 2023<span class="sep">•</span>1:00 PM<span class="sep">•</span>2 Hrs</div>
+                  <span class="t-caption">20 mins left</span>
+                  <button class="btn btn-primary is-wide w-start">Start Swiping</button>
+                </div>
+              </article>
+              <article class="card task-card">
+                <div class="thumb art art-dining"></div>
+                <div class="task-card-body">
+                  <span class="tag tag-teal">Open for swipe</span>
+                  <h3 class="card-title">Chef's Table</h3>
+                  <div class="card-meta">26 May 2023<span class="sep">•</span>8:00 PM<span class="sep">•</span>3 Hrs</div>
+                  <span class="t-caption">2 days left</span>
+                  <button class="btn btn-primary is-wide w-start">Start Swiping</button>
+                </div>
+              </article>
+            </div>
+            <div class="section mt-8">
+              <div class="dash-grid">
+                <a class="dash-tile" href="#"><span class="dash-tile-icon is-red">0</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Under<br>Review</span></a>
+                <a class="dash-tile" href="#"><span class="dash-tile-icon is-teal">3</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Upcoming<br>Events</span></a>
+                <a class="dash-tile" href="#"><span class="dash-tile-icon is-green">1</span><i class="dash-tile-arrow" data-icon="arrow-up-right" data-size="18" data-stroke="bold"></i><span class="dash-tile-label">Open for<br>swipe</span></a>
+              </div>
+            </div>
+          </div>
+          <nav class="tabbar" aria-label="Venue manager">
+            <a class="tab is-active" href="#"><span class="tab-icon"><i data-icon="layout-grid" data-size="26"></i></span>Dashboard</a>
+            <a class="tab" href="#"><span class="tab-icon"><i data-icon="inbox" data-size="26"></i><span class="tab-dot"></span></span>Applications</a>
+            <a class="tab" href="#"><span class="tab-icon"><i data-icon="qr-code" data-size="26"></i></span>Check-in</a>
+            <a class="tab" href="#"><span class="tab-icon"><i data-icon="user-round" data-size="26"></i></span>Profile</a>
+          </nav>
+        </div>
+        <div class="label">Manager · Dashboard · Applications · Check-in · Profile</div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-island"></div>
+          <div class="statusbar" data-statusbar></div>
+          <div class="screen no-scroll">
+            <div class="header">
+              <div class="header-pill"><span class="header-pill-avatar"><i data-icon="user-round" data-size="27"></i></span>Hi, Sara<i data-icon="chevron-down" data-size="16"></i></div>
+              <span class="grow"></span>
+              <button class="icon-btn" aria-label="Search"><i data-icon="search" data-size="26"></i></button>
+              <button class="icon-btn" aria-label="Notifications"><i data-icon="bell" data-size="22" data-stroke="bold"></i><span class="icon-btn-badge">30</span></button>
+            </div>
+            <div class="section mt-8"><span class="t-count accent-text">45 Events found</span></div>
+            <div class="section mt-6">
+              <article class="media-card">
+                <div class="media-card-img"><div class="art art-nightlife"></div><button class="heart-btn" aria-label="Save"><i data-icon="heart" data-size="17" data-stroke="bold"></i></button></div>
+                <div class="media-card-body"><h3 class="media-card-title">Mauvais Garçon Night</h3><div class="media-card-meta">Peabeach<span class="sep">•</span>Dubai Marina<span class="sep">•</span>Sat 8 Jun<span class="sep">•</span>9:00 PM</div></div>
+              </article>
+            </div>
+          </div>
+          <div class="sheet-backdrop"></div>
+          <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="apply-title">
+            <div class="sheet-grabber"></div>
+            <h2 class="sheet-title" id="apply-title">Apply to attend</h2>
+            <p class="sheet-sub">Mauvais Garçon Night<span class="sep">•</span>Peabeach<span class="sep">•</span>Sat 8 Jun</p>
+            <div class="mt-6"><label class="field-label">Message to the venue</label><div class="field is-textarea"><span class="field-placeholder">Tell Peabeach why you'd be a great fit for this night…</span></div></div>
+            <div class="sheet-row mt-5">
+              <div><div class="t-body">Guests</div><div class="t-meta mt-1">Including you<span class="sep">•</span>max 2</div></div>
+              <div class="stepper"><button class="stepper-btn" aria-label="Fewer guests"><i data-icon="minus" data-size="20"></i></button><span class="stepper-value">2</span><button class="stepper-btn" aria-label="More guests"><i data-icon="plus" data-size="20"></i></button></div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block">Send application</button>
+          </div>
+          <div class="home-bar"></div>
+        </div>
+        <div class="label">Apply sheet · .sheet-backdrop + .sheet</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Status bar isolated -->
+  <section class="ts" id="statusbar">
+    <h2 class="ts-title">Status bar <small>.statusbar — “9:41”, signal / wifi / battery inline SVG, system font</small></h2>
+    <div class="status-demo"><div class="statusbar" data-statusbar></div></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var cs = getComputedStyle(document.documentElement);
+  function val(name) { return cs.getPropertyValue(name).trim(); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+  /* ---- 01 Palette ---- */
+  function swatch(name, note, boxClass) {
+    var v = val(name);
+    return '<div class="sw"><div class="sw-box ' + (boxClass || '') + '"><div class="sw-fill" style="background:var(' + name + ')"></div></div>' +
+      '<div class="sw-label"><span class="sw-name">' + esc(name) + '</span><span class="sw-val" title="' + esc(v) + '">' + esc(v) + '</span>' +
+      (note ? '<span class="sw-note">' + esc(note) + '</span>' : '') + '</div></div>';
+  }
+  function fill(id, list) { document.getElementById(id).innerHTML = list.map(function (r) { return swatch(r[0], r[1], r[2]); }).join(''); }
+  fill('sw-surfaces', [
+    ['--color-bg', 'canvas', 'on-bg'], ['--color-bg-tabbar', 'tab-bar ground', 'on-bg'], ['--color-surface', 'card · tile · segmented', 'on-bg'],
+    ['--color-surface-elevated', 'secondary button (+5 %)'], ['--color-surface-pressed', 'pressed · neutral square (+10 %)'], ['--color-surface-disabled', 'disabled button'],
+    ['--color-border', 'ring · divider · tag-chip outline'], ['--color-border-strong', 'chip · name-pill ring'], ['--color-sheet-grabber', 'sheet grabber'],
+    ['--color-avatar-circle', 'header avatar circle'], ['--color-phone-bezel', 'desktop bezel (chrome)', 'on-bg']
+  ]);
+  fill('sw-text', [
+    ['--color-text-primary', 'titles · labels'], ['--color-text-meta', 'card meta (lavender)'], ['--color-text-secondary-strong', 'role line .70'],
+    ['--color-text-segment-inactive', 'inactive segment .62'], ['--color-text-secondary', 'See All · Last updated .60'], ['--color-text-tertiary', 'check-in line .50'],
+    ['--color-text-muted', 'weekday · off label .42'], ['--color-text-tab-inactive', 'inactive tab .35'], ['--color-text-disabled', 'disabled label .21'],
+    ['--color-avatar-glyph', 'avatar glyph']
+  ]);
+  fill('sw-accent', [
+    ['--color-accent', 'solid stand-in (gradient midpoint)'], ['--color-accent-tab', 'active tab icon'], ['--color-accent-web', 'website only'],
+    ['--color-success', 'check badge'], ['--color-danger', 'Under Review square'], ['--color-danger-text', 'red tag text'],
+    ['--color-info', 'Upcoming square'], ['--color-green', 'Open for swipe · teal tag text'], ['--color-purple', 'Happening now square'],
+    ['--color-tag-teal-bg', 'teal tag bg (green .13)'], ['--color-tag-red-bg', 'red tag bg (red .15)'], ['--color-heart-liked', 'liked heart'],
+    ['--color-chart-legend-2', 'chart series 2'], ['--color-icon-square-neutral', 'Past Events square']
+  ]);
+  fill('sw-gradients', [
+    ['--gradient-brand', 'brand 90° — segmented pill · stat tile · FAB · X button · gradient text'], ['--gradient-action', 'action 70° — Accept · Start Swiping · ✓'],
+    ['--gradient-action-tall', 'action 84° — selected date pill'], ['--gradient-badge', 'badge 78° — counts · dots'],
+    ['--gradient-accent-deep', 'accent deep 70° — Create-tile square'], ['--gradient-filter-panel', 'filter panel — opaque action gradient 70°', 'on-art'],
+    ['--glow-tab', 'tab glow 104 px on the tab-bar ground', 'on-tabbar glow'], ['--scrim-hero-bottom', 'hero bottom scrim over art', 'on-art'],
+    ['--gradient-surface-section', 'date-strip panel', 'on-bg'], ['--scrim-sheet', 'sheet backdrop .60', 'on-art']
+  ]);
+
+  /* ---- 02 Type scale ---- */
+  var TYPE = [
+    ['--type-display-xl', 'My Events', '.t-display-xl · large-title header'],
+    ['--type-display', 'Upcoming Events in <span class="accent-text is-hero">Dubai</span>', '.t-display · hero title + .accent-text (pink → magenta span)'],
+    ['--type-hero-headline', 'unveiling <span class="accent-text is-hero">influencers</span> extravaganza', '.t-hero · Explore-home headline (est.)'],
+    ['--type-display-sm', 'The Secret Society', '.t-display-sm / .wordmark · logo placeholder, venue title'],
+    ['--type-display-sm-light', 'Events at Peabeach', '.t-display-sm-light · venue-row title'],
+    ['--type-big-stat', '28K', '.t-big-stat · profile stat'],
+    ['--type-stat-number', '82', '.t-stat-number · stat tile · date digit'],
+    ['--type-title', 'To Review', '.t-h1 · back-header title'],
+    ['--type-title-strong', 'Sara Capriotti', '.t-h1-strong · swipe-card name · sheet title'],
+    ['--type-h2', 'Your Tasks', '.t-h2 · section heading'],
+    ['--type-list-title', 'Romain Fourel', '.t-list-title · To Review name'],
+    ['--type-list-title-strong', 'Peabeach', '.t-list-title-strong · venue card · media card'],
+    ['--type-count', '<span class="accent-text">45 Events found</span>', '.t-count.accent-text'],
+    ['--type-card-title', 'Hot Yoga Class', '.t-card-title · .card-title'],
+    ['--type-greeting', 'Hi, Sara', '.header-pill'],
+    ['--type-toggle-label', 'Pending Invites', '.toggle-bar-label'],
+    ['--type-date-month', 'May', '.date-pill-month'],
+    ['--type-section-link', 'See All ' + window.tssIcon('arrow-up-right', 19), '.t-section-link / .section-link (SVG arrow, not a text glyph)', 'c-secondary'],
+    ['--type-body', '<span class="c-meta">Brand :</span> The Secret Society Resort', '.t-body · tile labels · .card-kv "Brand :" line (key in --color-text-meta, value white)'],
+    ['--type-button', 'Accept', '.btn'],
+    ['--type-chip', 'Filters', '.chip'],
+    ['--type-meta', '25 May 2023<span class="sep">•</span>8:00 AM<span class="sep">•</span>2 Hrs', '.t-meta · --color-text-meta', 'c-meta'],
+    ['--type-link', '<a class="link-gradient" href="#">Add Review</a>', '.link-gradient · 1 px gradient underline'],
+    ['--type-date-day', 'Thu', '.date-pill-day · muted', 'c-muted'],
+    ['--type-meta-sm', 'Check in 10:21 PM out 11:24 PM', '.t-meta-sm · tertiary', 'c-tertiary'],
+    ['--type-rating-digits', '4.8', 'swipe-card rating digits'],
+    ['--type-badge', '24', '.badge · .chip-badge · .icon-btn-badge'],
+    ['--type-tab-label', 'Explore', '.tab'],
+    ['--type-stat-label', 'Requests', '.stat-tile-label'],
+    ['--type-label-upper', 'ESTABLISHMENTS', '.t-label · .seg-item · +0.02em'],
+    ['--type-tag-upper', 'UNDER REVIEW', '.tag-teal / .tag-red · +0.02em'],
+    ['--type-tag-chip-upper', 'BEACH CAFE', '.tag · +0.02em'],
+    ['--type-caption-upper', '20 MINS LEFT', '.t-caption · +0.04em'],
+    ['--type-status-bar', '9:41', '.statusbar · system font']
+  ];
+  document.getElementById('type-rows').innerHTML = TYPE.map(function (r) {
+    var v = val(r[0]);
+    var m = v.match(/^(\d{3})\s+([\d.]+px)\/([\d.]+)/);
+    var spec = m ? '<b>' + m[2] + '</b> · ' + m[1] + ' · lh ' + m[3] : esc(v);
+    var upper = /upper/.test(r[0]) ? 'text-transform:uppercase;letter-spacing:' + (/caption/.test(r[0]) ? 'var(--tracking-upper-wide)' : 'var(--tracking-upper)') + ';' : '';
+    var track = /display|hero/.test(r[0]) ? 'letter-spacing:var(--tracking-display);' : '';
+    return '<div class="tr"><div class="tr-sample ' + (r[3] || '') + '" style="font:var(' + r[0] + ');' + upper + track + '">' + r[1] + '</div>' +
+      '<div class="tr-spec">' + esc(r[0]) + '<br>' + spec + '<br>' + esc(r[2]) + '</div></div>';
+  }).join('');
+
+  /* ---- Icon set ---- */
+  var names = Object.keys(window.TSS_ICONS).sort();
+  document.getElementById('icon-grid').innerHTML = names.map(function (n) {
+    return '<div class="icon-cell">' + window.tssIcon(n, 24) + '<span>' + n + '</span></div>';
+  }).join('');
+
+  /* ---- Art recipes ---- */
+  var arts = ['dining', 'nightlife', 'beach', 'wellness', 'beauty', 'fitness', 'rooftop', 'cafe'];
+  document.getElementById('art-grid').innerHTML = arts.map(function (a) {
+    return '<div class="demo-block" style="align-items:center"><div class="art art-' + a + '" style="width:96px;height:96px;border-radius:var(--radius-lg)"></div>' +
+      '<div class="thumb art art-' + a + (a === 'beauty' || a === 'dining' ? ' art-portrait' : '') + '"></div><span class="label" style="margin:0">.art-' + a + '</span></div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+/* tokens.css — The Secret Society demo · design tokens (dark only, no theme switch).
+   Every value traces to a measurement of the App Store reference PNGs (1242×2687, screen
+   x108–1133 = 1026 px = 393 pt → 2.611 image px per CSS px). See DESIGN_TOKENS.md for the
+   sample coordinates behind each token and for the decisions taken where the four
+   measurement lenses disagreed. Values marked (est.) come from the two tilted shots or from
+   screens no public reference shows; (conv.) = iOS convention, not measurable from stills. */
+:root {
+  /* Phone frame — 390×844 (iPhone 14 class) frame; status bar 47, home-indicator area 34; header row sits 56 from the frame top (55–63 pt measured), large-title header at 68 (75 pt measured); side gutter 24 (63–66 px), content column 342. */
+  --frame-w: 390px;
+  --frame-h: 844px;
+  --status-bar-h: 47px;
+  --home-area-h: 34px;
+  --home-indicator-w: 134px;
+  --home-indicator-h: 5px;
+  --home-indicator-bottom: 8px;
+  --gutter: 24px;
+  --gutter-review-left: 15px; /* To Review only: rows + 3-up seg span x 147–1071 on 6.5.8 (15 left / 24 right) */
+  --content-w: 342px;
+  --header-top: 56px;
+  --header-top-large: 68px;
+  --header-row-h: 50px;
+  --px-per-pt-ref: 2.611;
+
+  /* Canvas & surfaces — canvas #010101 (12 flat samples, spread 0); card/tile/segmented/date-pill surface #18151e; the ladder above it is white-alpha over the surface: +5 % secondary buttons, +10 % pressed / neutral icon square / on-card outlines; disabled is +2.6 %; tab bar has its own navy ground #03031b (census of every bottom strip). */
+  --color-bg: #010101;
+  --color-bg-tabbar: #03031b;
+  --color-surface: #18151e;
+  --color-surface-elevated: #23202b;
+  --color-surface-pressed: #2f2c35;
+  --color-surface-disabled: #1e1b26;
+  --color-surface-sheet: #18151e;
+  --gradient-surface-section: linear-gradient(180deg, rgba(24, 21, 30, 0) 0%, rgba(24, 21, 30, 0.75) 100%);
+  --color-marketing-bg: #060606;
+
+  /* Borders & dividers — icon-button rings, dividers and tag-chip outlines are white 10 % (#1a1a1a on canvas, #2f2c35 on a card); chips and the "Hi, name" pill are white 30 % (#4e4e4e). Ring ink: icon button ≈2 pt, name pill ≈2 pt, chip ≈1 pt, tag chip/divider 1 pt. */
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-border-on-bg: #1a1a1a;
+  --color-border-on-surface: #2f2c35;
+  --color-border-strong: rgba(255, 255, 255, 0.30);
+  --color-border-strong-hex: #4e4e4e;
+  --color-divider: rgba(255, 255, 255, 0.10);
+  --border-w-hairline: 1px;
+  --border-w-ring: 2px;
+
+  /* Text — primary white; card meta lines are a genuine lavender grey (#766f94, B ≫ R,G — not white-alpha); every other secondary tone is white-alpha: .70 role line, .62 inactive segment, .60 See All / Last updated, .50 tertiary, .42 muted (inactive weekday, off toggle label, counters), .35 inactive tab, .21 disabled. The active tab label is plain white (6.5.1-1 "Profile" brightest #fefefe; the earlier .90 was an anti-aliased core mean). The *-hex variants are the .60/.50/.42 tones flattened onto the canvas, for icon strokes whose overlapping sub-paths would otherwise compound the alpha (6.5.5 refresh glyph is a flat #969696–#a2a2a2). */
+  --color-text-primary: #ffffff;
+  --color-text-meta: #766f94;
+  --color-text-secondary-strong: rgba(255, 255, 255, 0.70);
+  --color-text-segment-inactive: rgba(255, 255, 255, 0.62);
+  --color-text-secondary: rgba(255, 255, 255, 0.60);
+  --color-text-tertiary: rgba(255, 255, 255, 0.50);
+  --color-text-muted: rgba(255, 255, 255, 0.42);
+  --color-text-disabled: rgba(255, 255, 255, 0.21);
+  --color-text-tab-inactive: rgba(255, 255, 255, 0.35);
+  --color-text-tab-active: #ffffff;
+  --color-text-secondary-hex: #999999;
+  --color-text-tertiary-hex: #808080;
+  --color-text-muted-hex: #6b6b6b;
+  --color-text-on-accent: #ffffff;
+  --color-text-on-photo: #ffffff;
+
+  /* Accent solids — #603eda is the action gradient's sRGB midpoint (= --gradient-action-mid; the solid-looking dots/badges measure #5b3dd9–#5f3eda at centre — use only where a gradient is impossible; the earlier #6e42da was the 33 % point and rendered pinker); #7345dc is the lit tab icon; #7a4cf8 is the marketing-website accent (web only). */
+  --color-accent: #603eda;
+  --color-accent-tab: #7345dc;
+  --color-accent-web: #7a4cf8;
+
+  /* Brand gradient (pink → magenta → violet), horizontal, 3 stops — segmented selection, stat tile 1, FAB, X button, Create-tile border, gradient text + underline, chart series 1. Mid stop #e84ee6 is a measured saturated magenta (a 2-stop sRGB blend would give #cf6cc7). */
+  --gradient-brand: linear-gradient(90deg, #f59896 0%, #e84ee6 50%, #a842f8 100%);
+  --gradient-brand-start: #f59896;
+  --gradient-brand-mid: #e84ee6;
+  --gradient-brand-end: #a842f8;
+  --gradient-text: linear-gradient(90deg, #f59896 0%, #e84ee6 50%, #a842f8 100%);
+  --gradient-text-underline-h: 1px;
+
+  /* Action gradient (violet → indigo), 2 stops, light corner bottom-left — Accept, Start Swiping, selected date pill, toggle track, ✓ button, count badges, tile dots, tab notification dot, chart series 2. Angle follows the box aspect (constant ≈15 % relative rise): 70deg for ~2.6:1 buttons, 62deg for 3.5:1, 74deg for the 1.9:1 toggle, 78deg for the ~1.1:1 count badge (bottom row ≈9/255 brighter than the top), 84deg for the tall date pill; deep variant = ×0.75 brightness at the same 70deg (Create-tile icon square: 6.5.5 top row y = 2482 #5f36ac → #2f29a7, bottom row y = 2524 #663aae → #372daa — the same bottom-left light corner, so not a flat 90deg). */
+  --gradient-action: linear-gradient(70deg, #8c4bde 0%, #3332d6 100%);
+  --gradient-action-wide: linear-gradient(62deg, #8c4bde 0%, #3332d6 100%);
+  --gradient-action-toggle: linear-gradient(74deg, #8c4bde 0%, #3332d6 100%);
+  --gradient-action-tall: linear-gradient(84deg, #8c4bde 0%, #3332d6 100%);
+  --gradient-action-start: #8c4bde;
+  --gradient-action-mid: #5f3eda;
+  --gradient-action-end: #3332d6;
+  --gradient-accent-deep: linear-gradient(70deg, #5f36ac 0%, #2f29a7 100%);
+  --gradient-badge: linear-gradient(78deg, #8c4bde 0%, #3332d6 100%);
+  --gradient-toggle-track: linear-gradient(74deg, #8c4bde 0%, #3332d6 100%);
+
+  /* Explore-home filter band — one violet panel = the OPAQUE action gradient (6.5.1 panel-only pixels between the tiles read #6f42db (788,2100), #6f42da (837,2142), #7152de (986,2113), #4a38d8 (1235,2065) — exactly #8c4bde→#3332d6 evaluated along the band; at α .85 over the dark hero it rendered ≈25–30/255 too dark and its right third turned indigo) holding three translucent tiles (white .06 over the panel: tiles read #8e5ae0 / #7954df / #6951dd = panel + white ≈.07); glyphs and labels white. */
+  --gradient-filter-panel: linear-gradient(70deg, #8c4bde 0%, #3332d6 100%);
+  --color-filter-tile: rgba(255, 255, 255, 0.06);
+  --color-filter-tile-pressed: rgba(255, 255, 255, 0.14);
+
+  /* Status colours — green check badge #4ecb70; dashboard icon squares red #f45e5f (Under Review), teal-blue #469baf (Upcoming), green #43ab88 (Open for swipe), purple #c473f6 (Happening now), neutral #2f2c35 (Past); tag backgrounds are the status colour at .13–.15 over the card surface. */
+  --color-success: #4ecb70;
+  --color-danger: #f45e5f;
+  --color-danger-text: #fb6162;
+  --color-info: #469baf;
+  --color-green: #43ab88;
+  --color-purple: #c473f6;
+  --color-icon-square-neutral: #2f2c35;
+  --color-icon-square-glyph: #ffffff;
+  --color-tag-teal-bg: #20272d;
+  --color-tag-teal-bg-rgba: rgba(67, 171, 136, 0.13);
+  --color-tag-teal-text: #43ab88;
+  --color-tag-teal-solid-bg: #43ab88;
+  --color-tag-teal-solid-text: #ffffff;
+  --color-tag-red-bg: #3a2029;
+  --color-tag-red-bg-rgba: rgba(244, 94, 95, 0.15);
+  --color-tag-red-text: #fb6162;
+  --color-tag-chip-outline: rgba(255, 255, 255, 0.10);
+  --color-tag-chip-text: #ffffff;
+
+  /* Small component colours — count badges/dots use the action gradient with white digits; check badge green with a 2 px card-colour ring; the Explore heart button is a solid white disc with a black outline heart; header avatar circle #1e1d3c with a #6e7feb glyph; toggle knob white. */
+  --color-badge-text: #ffffff;
+  --color-check-badge: #4ecb70;
+  --color-check-badge-glyph: #ffffff;
+  --color-check-badge-ring: #18151e;
+  --color-heart-button-bg: #ffffff;
+  --color-heart-button-icon: #000000;
+  --color-heart-liked: #f59896;
+  --color-avatar-circle: #1e1d3c;
+  --color-avatar-glyph: #6e7feb;
+  --color-toggle-knob: #ffffff;
+  --color-chart-legend-2: #5438b3;
+  --color-web-bg: #000000;
+  --color-web-nav-bg: #08070c;
+  --color-web-text: #eaeaea;
+
+  /* Scrims — hero photos fade to the canvas over the last ≈100 px with an ease-in (photo reaches #010101 20–30 pt before the next element); a faint top scrim keeps the status bar legible (low confidence, ≤.45). */
+  --scrim-hero-bottom: linear-gradient(180deg, rgba(1, 1, 1, 0) 45%, rgba(1, 1, 1, 0.55) 70%, rgba(1, 1, 1, 0.92) 88%, #010101 100%);
+  --scrim-hero-top: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 20%);
+  --scrim-sheet: rgba(0, 0, 0, 0.60);
+
+  /* Elevation — cards, tiles, chips, buttons and segmented controls are flat; only the FAB (violet glow ≥35 pt below), the ✓ swipe button (halo 19 pt past the edge) and the active tab (radial glow, peak ≈#33227e over the bar, radius ≈50 pt, spills 20–25 pt above the bar) glow. */
+  --shadow-card: none;
+  --shadow-fab: 0 12px 28px rgba(190, 80, 230, 0.35);
+  --shadow-swipe-check: 0 0 40px 8px rgba(110, 66, 218, 0.45);
+  --shadow-swipe-x: 0 0 6px rgba(240, 100, 200, 0.25);
+  --glow-tab: radial-gradient(circle at center, rgba(115, 69, 220, 0.50) 0%, rgba(115, 69, 220, 0) 100%);
+  --glow-tab-size: 104px;
+
+  /* Typography — Plus Jakarta Sans (closest Google Font to the app face: double-storey a, single-storey g, slanted-cut t, flat-cut C/e, cap 0.75 em); sizes = cap-height px / (2.611 × 0.75). Status bar keeps the system font. */
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-google-url: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --tracking-display: -0.01em;
+  --tracking-normal: 0;
+  --tracking-upper: 0.02em;
+  --tracking-upper-wide: 0.04em;
+
+  /* Type scale — font shorthands (weight size/line-height family) per role; the sample that fixed each is in DESIGN_TOKENS.md. Status tags (UNDER REVIEW, OPEN FOR SWIPE) and the "20 MINS LEFT" caption are 9.5px: at 9 the word boxes rendered 3–7 % narrower and 3–5 % shorter than the reference on every sample (6.5.7 UNDER REVIEW 73.2×6.9 CSS, 6.5.5 OPEN FOR SWIPE 81.2×6.9, 20 MINS LEFT 64.0×7.3, 6.5.6 solid 81.2×6.9) while the 10px labels matched. Chips are 12px (cap 24.5–25 px ⇒ 12.3–13.0; Plus Jakarta Sans runs ≈12–18 % wider than the app face at equal cap height, so 12 with the measured 18 padding is the compromise). Outlined tag chips (BAR, BEACH CAFE) are 8px (round 3): 6.5.7 text ink BAR 41×16 px, BEACH CAFE 134×17 px, cap 6.1 CSS ⇒ 8.2px; PJS 600 at 8px renders 41×16 / 133×16 and, with the ring-to-ring chip widths 110 / 203 px (42.1 / 77.7 CSS) fixing the padding at 12, the chips land at 112 / 202 px — the round-2 7.5px was fitted to a 37.5 / 73.1 CSS width that re-measures as 42.1 / 77.7. Stat-tile labels are 10.5px (round 3): 6.5.4 'T' caps 20–21 px and word boxes To confirm 131×21, To review 117×21, To visit 78×21, Requests 108×25; PJS 500 at 10.5 renders 134×21 / 120×20 / 86×20 / 120×25 (at 10: 128×20, caps 19; at 11: 141×22, 8–15 % too wide). The 3-up segmented labels (CHECKED IN / OUT / NO SHOW) are 10.5px too (--fs-label-upper-3up): 6.5.8 word boxes 172×21 / 203×22 vs PJS 600 at 10.5 168×21 / 202×21 (10: 160×20 / 192×20); the 2-up ESTABLISHMENTS | BRANDS control stays at 10 (6.5.7 caps 20 px, width ratio 0.99). */
+  --type-display-xl: 600 37px/1.15 var(--font-sans);
+  --type-display: 600 33px/1.2 var(--font-sans);
+  --type-display-sm: 600 25px/1.2 var(--font-sans);
+  --type-display-sm-light: 500 25px/1.2 var(--font-sans);
+  --type-title: 500 19px/1.2 var(--font-sans);
+  --type-title-strong: 600 19px/1.2 var(--font-sans);
+  --type-h2: 500 18px/1.2 var(--font-sans);
+  --type-list-title: 500 17px/1.25 var(--font-sans);
+  --type-list-title-strong: 600 17px/1.25 var(--font-sans);
+  --type-count: 500 16px/1.2 var(--font-sans);
+  --type-card-title: 600 15px/1.3 var(--font-sans);
+  --type-greeting: 600 15px/1.2 var(--font-sans);
+  --type-toggle-label: 500 15px/1.2 var(--font-sans);
+  --type-section-link: 500 14px/1.2 var(--font-sans);
+  --type-body: 500 13px/1.3 var(--font-sans);
+  --type-button: 600 13px/1.2 var(--font-sans);
+  --type-chip: 600 12px/1.2 var(--font-sans);
+  --type-meta: 400 12px/1.3 var(--font-sans);
+  --type-link: 500 12px/1.2 var(--font-sans);
+  --type-meta-sm: 400 11px/1.3 var(--font-sans);
+  --type-rating-digits: 700 11px/1.3 var(--font-sans);
+  --type-badge: 600 11px/1 var(--font-sans);
+  --type-tab-label: 500 11px/1.2 var(--font-sans);
+  --type-stat-label: 500 10.5px/1.2 var(--font-sans);
+  --type-label-upper: 600 10px/1 var(--font-sans);
+  --type-tag-upper: 600 9.5px/1 var(--font-sans);
+  --type-tag-chip-upper: 600 8px/1 var(--font-sans);
+  --type-caption-upper: 700 9.5px/1 var(--font-sans);
+  --type-stat-number: 600 21px/1 var(--font-sans);
+  --type-date-digit: 600 21px/1 var(--font-sans);
+  --type-date-month: 500 15px/1.2 var(--font-sans);
+  --type-date-day: 400 12px/1.2 var(--font-sans);
+  --type-big-stat: 600 36px/1 var(--font-sans);
+  --type-hero-headline: 600 30px/1.15 var(--font-sans);
+  --type-status-bar: 600 17px/1 var(--font-system);
+
+  /* Font sizes alone (same roles) for places that set size and weight separately. */
+  --fs-display-xl: 37px;
+  --fs-display: 33px;
+  --fs-display-sm: 25px;
+  --fs-title: 19px;
+  --fs-h2: 18px;
+  --fs-list-title: 17px;
+  --fs-count: 16px;
+  --fs-card-title: 15px;
+  --fs-section-link: 14px;
+  --fs-body: 13px;
+  --fs-button: 13px;
+  --fs-chip: 12px;
+  --fs-meta: 12px;
+  --fs-meta-sm: 11px;
+  --fs-badge: 11px;
+  --fs-tab-label: 11px;
+  --fs-stat-label: 10.5px;
+  --fs-label-upper: 10px;
+  --fs-label-upper-3up: 10.5px; /* 3-up segmented labels only (6.5.8); the 2-up control keeps --fs-label-upper */
+  --fs-tag-upper: 9.5px;
+  --fs-tag-chip-upper: 8px;
+  /* Meta-line separator (round 3) — the reference dots are 6×6 px = 2.3 CSS, centred ≈0.6–0.9 CSS below the cap centre, with 4.6–5.0 CSS clear on each side (6.5.4 (380,1950)–(860,2000), 6.5.5 (388,1498)–(846,1544)). Plus Jakarta Sans has no glyph that size: the bullet U+2022 renders 3.8 CSS and the middle dot U+00B7 only 1.15, so the bullet is set inside <span class="sep"> at .55 em (renders 2.30 CSS, centre +1.05) with a 3.5 px margin (gaps 4.9 CSS; 4 px gave 5.4). */
+  --meta-sep-scale: 0.55;
+  --meta-sep-gap: 3.5px;
+  --fs-stat-number: 21px;
+  --fs-big-stat: 36px;
+  --fs-hero-headline: 30px;
+
+  /* Spacing scale — 4-based; card padding 16 (44 px), grid gap 20 (54–55 px), list gap 16 (36–45 px), 4-up tile / date-pill gap 15 (38–39 px), section gap 32 (80–85 px), title→content 24 (69 px), chip gap 7 (6.5.4 y = 1480: Location→Date 17 px, Date→Category 18 px = 6.5–6.9 CSS), button gap 8 (22 px) or 12 (34 px), carousel peek 12 (33 px), header icon gap 12 (32 px). */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-14: 56px;
+  --space-card-pad: 16px;
+  --space-grid-gap: 20px;
+  --space-list-gap: 16px;
+  --space-tile-gap: 15px;
+  --space-section: 32px;
+  --space-block: 24px;
+  --space-title-to-content: 24px;
+  --space-chip-gap: 7px;
+  --space-button-gap: 8px;
+  --space-button-gap-wide: 12px;
+  --space-carousel-peek: 12px;
+  --space-header-icon-gap: 12px;
+  --space-thumb-text-gap: 16px;
+  --space-title-meta-gap: 8px;
+  --space-row-to-buttons: 17px;
+  --space-swipe-stack-top: 36px;
+  --space-swipe-card-to-counter: 56px;
+
+  /* Radii — fitted arcs: icon squares 17–19 px → 7; buttons 32–34 → 12; segmented selection pill 30–35 (50 %-edge least-squares, mean 12.8 CSS) → 13; stat tile / toggle bar / segmented container → 17 (round 3: the 6.5.4 stat tiles fit 44.1–44.4 px, the toggle bar 43.4–43.7, the 6.5.8 3-up segmented container 44.8 with the same corner-inset code that reads a rendered r16 as 42.2, r17 as 43.3 and r18 as 46.6 at 2.611 px/CSS — so neither the original 18 nor the round-3 claim of 16); date pill 53 → 20; dashboard tile 56 → 22; cards 79–86 → 30; tab-bar top corners ≈104 (canvas→navy insets 28/23/20/17/15 CSS at 2.3/3.8/5.4/6.9/8.4 CSS below the straight edge fit r40 within 1 CSS) → 40; date-strip panel bottom ≈117 → 44; everything else a full pill/circle. */
+  --radius-xs: 7px;
+  --radius-sm: 12px;
+  --radius-segment: 13px;
+  --radius-md: 17px;
+  --radius-date-pill: 20px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+  --radius-panel-bottom: 44px;
+  --radius-pill: 999px;
+  --radius-button: 12px;
+  --radius-button-lg: 14px;
+  --radius-card: 30px;
+  --radius-tile: 17px;
+  --radius-tile-dashboard: 22px;
+  --radius-segmented: 17px;
+  --radius-toggle-bar: 17px;
+  --radius-tabbar-top: 40px;
+  --radius-icon-square: 7px;
+  --radius-swipe-card: 30px;
+  --radius-filter-panel: 24px;
+  --radius-filter-tile: 20px;
+  --radius-sheet: var(--radius-card); /* (est.) no sheet in any shot; every measured card is r30–31, so the sheet matches the card system */
+  --radius-field: 16px;
+
+  /* Iconography — Lucide (ISC), 24-grid, round caps/joins, fill none, stroke currentColor. Sizes are the SVG box, and the visible ink is (path span / 24) × box + the CSS stroke: 26 in circular buttons (search spans 18/24 ⇒ 19.5 + 1.6 = 21.1; measured 20.3), 22 for the bell (Lucide's bell spans 17.5×20 ⇒ 16.0×18.3 + 1.75 = 17.8×20.1; measured 17.6×20.3 on 6.5.5, 18.0×20.7 on 6.5.4 — at 26 it drew 20.7×23.4), 15 for the layout-toggle `server` glyph (20/24 ⇒ 12.5 + 1.6 = 14.1; measured 13.8 square), 17 leading in chips (sort glyph 18×16 ⇒ 14.4×12.9, measured 13.8×12.6; the custom sliders glyph is drawn to 13.0×14.8 at this box, measured 13.0×14.6), 16 inline before text (pin 11.9×14.2), 12 for the refresh glyph (measured 9.4), 18 for the tile ↗ and 19 for the "See All ↗" arrow (arrow-up-right spans 10/24 ⇒ 7.5 + 1.75 = 9.25 / 7.9 + 1.6 = 9.5; measured 8.8×9.2 on the tile, 9.6×9.2 beside "See All"), 27 for the filled header-pill silhouette (briefcase 20×18/24 ⇒ 22.5×20.3, no stroke; measured 22.6×20.7 in the ⌀38.3 disc = 57 % — the 20/22 boxes drew a 16.7 CSS blob), 26 in the tab bar (est.), 17 heart (ink ≈16×14; measured 14.9×14.6 = 31 % of the ⌀48 disc — Lucide's heart spans 20×17.3/24, so a 22 box drew 18×16 of path plus stroke), 24 FAB plus (glyph 14), 28 back arrow (glyph ≈16.5), 14 check inside the 16 px badge.
+     Strokes are CSS px on every box: the sprite paths carry vector-effect="non-scaling-stroke" (or `.icon * { vector-effect: non-scaling-stroke }`), so stroke-width no longer shrinks with the viewBox — the reference keeps one weight from the 50 px buttons down to the 16 px pin (search 1.53–1.60, bell 1.73–1.76, back arrow 1.57–1.64, refresh 1.59, heart 1.70, pin 1.98). Ladder: 1.6 default, 1.75 small bold glyphs (heart, bell), 2 for the FAB plus (measured 2.1–2.4) and the pin, 2.5 inside the check badge (measured ≈2.35); the back arrow uses the default, not the heavy stroke. */
+  --icon-size: 26px;
+  --icon-size-bell: 22px;
+  --icon-size-avatar-glyph: 27px;
+  --icon-size-layout-toggle: 15px;
+  --icon-size-chip: 17px;
+  --icon-size-inline: 16px;
+  --icon-size-refresh: 12px;
+  --icon-size-tile-arrow: 18px;
+  --icon-size-arrow: 19px;
+  --icon-size-tab: 26px;
+  --icon-size-heart: 17px;
+  --icon-size-fab: 24px;
+  --icon-size-back: 28px;
+  --icon-size-swipe-x: 24px;
+  --icon-size-swipe-check: 28px;
+  --icon-size-check-badge: 14px;
+  --icon-size-filter-tile: 24px;
+  --icon-stroke: 1.6;
+  --icon-stroke-bold: 1.75;
+  --icon-stroke-heavy: 2;
+  --icon-stroke-back: 1.6;
+  --icon-stroke-badge: 2.5;
+  --icon-vector-effect: non-scaling-stroke;
+
+  /* Component sizes — header & navigation: circular icon button ⌀50 (131–137 px) with a ⌀17 notification badge (6.5.3 Filters "2" badge 16.9 CSS; 6.5.1 bell "30" ≈15×15 foreshortened on the tilted shot), "Hi, name" pill h54 with a ⌀40 avatar inset 7 and 18 right padding, tab bar 104 tall (bar top measured 746 pt down an 852 pt screen ⇒ ≈105 pt; 70 content + 34 home area) with r40 top corners (--radius-tabbar-top; the canvas outside the arc is glow-tinted #0d0713–#130a1b, not bezel), tab icon 26 + label 6 below (est.). */
+  --size-icon-button: 50px;
+  --size-icon-button-badge: 17px;
+  --size-name-pill-h: 54px;
+  --size-name-pill-avatar: 40px;
+  --name-pill-pad: 7px;
+  --name-pill-pad-right: 18px;
+  --name-pill-text-gap: 12px;
+  --size-tabbar-h: 104px;
+  --size-tabbar-content-h: 70px;
+  --tab-label-gap: 6px;
+  --size-tab-dot: 8px;
+
+  /* Component sizes — buttons, chips, tags, badges: buttons h42 (109–113 px) r12, Accept w108, Start Swiping w145, sheet CTA h48 (est.); chips h42 (6.5.3 Filters ring y 1319–1428 = 110 px = 42.1 CSS, the same rows as the layout toggle beside it; 6.5.4 My Events chips are 105 px = 40.2 — within a row chips and the toggle always share one height, so the Explore value is used) pad-x 18 (6.5.4 Location ring 429 → text 476 = 47 px = 18.0 both sides), 1 px .30 ring, chip count badge ⌀17 (6.5.3 "2" 44 px = 16.9); status tags h23 (coverage-sum 59.2–60.3 px = 22.7–23.1 CSS on the teal, red and solid-teal tags; 24 would be 62.7 px) pad-x 10; outlined tag chips h23 (outer ring 61 px = 23.4) pad-x 12 (round 3: 6.5.7 ring-to-ring at mid-height BAR x 389–498 = 110 px, BEACH CAFE 510–712 = 203 px; the round-2 "ring 395 → text 423 = 10.7" was read off-centre where the pill's arc has already curved in); title count badge h20 pill with pad-x 4 (6.5.8 "24" bbox (549,899)–(604,948) = 21.4×19.2 CSS, digits 11.9×8.0 ⇒ ≈4.6 side padding — a near-circle, not a pill; digits stay 11/600, cap 8.0 CSS = 10.7px); the ⌀17 bell / chip badges use pad-x 2 so "30" renders ≈19×17 (6.5.1 ≈15×15 on the tilted shot) and "2" stays a ⌀17 disc; stat-tile dot ⌀8 (20 px); FAB ⌀62 (162 px) 24 from the right edge; Explore heart ⌀48 (125 px) inset 20; swipe X ⌀62 and ✓ ⌀88 with centres 124 apart. */
+  --size-button-h: 42px;
+  --size-button-h-lg: 48px;
+  --size-button-w-accept: 108px;
+  --size-button-w-start: 145px;
+  --button-pad-x: 22px;
+  --size-chip-h: 42px;
+  --chip-pad-x: 18px;
+  --size-chip-badge: 17px;
+  --size-tag-h: 23px;
+  --tag-pad-x: 10px;
+  --tag-chip-pad-x: 12px; /* round 3: 6.5.7 ring-to-ring BAR 110 px / BEACH CAFE 203 px = 42.1 / 77.7 CSS ⇒ 2×(1 + 12) + text; 11 gave 108 / 198 */
+  --size-count-badge-h: 20px;
+  --count-badge-pad-x: 4px;
+  --badge-sm-pad-x: 2px;
+  --size-badge-dot: 8px;
+  --size-fab: 62px;
+  --fab-right: 24px;
+  --fab-bottom-gap: 16px;
+  --size-heart-button: 48px;
+  --heart-button-inset: 20px;
+  --size-swipe-x: 62px;
+  --size-swipe-check: 88px;
+  --swipe-button-centres: 124px;
+
+  /* Component sizes — controls: segmented h56 (147 px) padding 6 (selected pill h44, r13); toggle bar h64 (165 px); switch 51×31 (135×80 px) knob ⌀23 inset 4; date pill 70×102 (185×267 px) gap 15, date-strip panel overhangs 53 below the pills; "Show full Calendar" pill h36 (93 px) w147 (384 px at mid-height, centre x=622 = screen centre; the 137 quoted earlier was a chord 16 px from the pill's top/bottom edge) centred on the panel edge. */
+  --size-segmented-h: 56px;
+  --segmented-pad: 6px;
+  --size-segment-pill-h: 44px;
+  --size-toggle-bar-h: 64px;
+  --size-switch-w: 51px;
+  --size-switch-h: 31px;
+  --size-switch-knob: 23px;
+  --switch-pad: 4px;
+  --size-date-pill-w: 70px;
+  --size-date-pill-h: 102px;
+  --date-panel-overhang: 53px;
+  --size-calendar-pill-h: 36px;
+  --size-calendar-pill-w: 147px;
+
+  /* Component sizes — tiles, cards, thumbs: My Events stat tile 72×84 (190×222 px); dashboard tile 100×100 (260 px) pad 14 with a 26 px icon square; invite card h138 (362 px); To Review row h102 (266 px); venue card h262 (684 px); task card 314×204 (820×534 px); event image card 342 wide, image 256 (4:3 assumed — cut off in every shot); swipe card 320×428 with an 80 name panel; thumbs/avatars ⌀50 (132–134 px), venue-row thumb ⌀58 (153 px), check badge ⌀16 (39 px) at the avatar's 4–5 o'clock. */
+  --size-stat-tile-w: 72px;
+  --size-stat-tile-h: 84px;
+  --stat-tile-pad-y: 21px;
+  --size-dash-tile: 100px;
+  --dash-tile-pad: 14px;
+  --size-icon-square: 26px;
+  --size-invite-card-h: 138px;
+  --size-list-row-h: 102px;
+  --size-venue-card-h: 262px;
+  --size-task-card-w: 314px;
+  --size-task-card-h: 204px;
+  --size-event-card-w: 342px;
+  --size-event-card-img-h: 256px;
+  --size-swipe-card-w: 320px;
+  --size-swipe-card-h: 428px;
+  --size-swipe-name-panel: 80px;
+  --swipe-stack-offset: 10px;
+  --size-thumb: 50px;
+  --size-avatar: 50px;
+  --size-thumb-venue: 58px;
+  --size-check-badge: 16px;
+  --size-filter-tile-w: 108px;
+  --size-filter-tile-h: 96px;
+  --filter-panel-pad: 12px;
+  --filter-tile-gap: 16px;
+
+  /* Component sizes — heroes: Explore hero ≈276 tall (702→~1420 px incl. fade), Establishments hero 260 (684 px) with the first card starting at 260; fade length ≈100. Profile hero (est.) ≈300. */
+  --size-hero-explore: 276px;
+  --size-hero-establishments: 260px;
+  --size-hero-profile: 300px;
+  --hero-fade-h: 100px;
+
+  /* Screens not shown in any public reference (est.) — sheet grabber 36×5 (iOS convention), sheet padding 24, form field h56, OTP box 48×56, toast h48 pill. */
+  --size-sheet-grabber-w: 36px;
+  --size-sheet-grabber-h: 5px;
+  --color-sheet-grabber: #3a3742;
+  --sheet-pad: 24px;
+  --size-field-h: 56px;
+  --color-field-border: rgba(255, 255, 255, 0.08);
+  --color-field-focus: #603eda;
+  --size-otp-w: 48px;
+  --size-otp-h: 56px;
+  --size-toast-h: 48px;
+
+  /* Motion (conv.) — not measurable from stills; iOS-feel defaults: 120 ms micro (press), 200 ms page/segment slide, 260 ms sheet, 320 ms swipe fly-out; pressed state = brightness .9 + scale .97. */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 260ms;
+  --duration-swipe: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --press-scale: 0.97;
+  --press-brightness: 0.9;
+  --swipe-fly-rotate: 12deg;
+  --swipe-threshold: 90px;
+
+  /* Phone chrome (added by the style-tile pass; desktop-only, outside the app UI) — the bezel that frames the 390×844 canvas when the viewport is wider than 430 px, the Dynamic-Island pill of the 14 Pro mockup (measured on 6.5.3 and 6.5.7: black run x 487–754 at y 740/800 = 268 px = 102.7 CSS, y 727–812 at x 620 = 86 px = 32.9 CSS, top edge 27 px = 10.3 CSS below the screen top at y 700 ⇒ 103×33 at 10; invisible on the black canvas, visible over heroes), and the status-bar insets measured on 6.5.4 ("9:41" left edge 82 px = 31 CSS; battery right edge 41 px = 16 CSS). Touch target 44 = iOS HIG minimum (conv.). */
+  --radius-phone: 44px;
+  --phone-bezel-w: 10px;
+  --color-phone-bezel: #1b1a20;
+  --color-phone-bezel-edge: rgba(255, 255, 255, 0.08);
+  --shadow-phone: 0 30px 80px rgba(0, 0, 0, 0.6);
+  --size-island-w: 103px;
+  --size-island-h: 33px;
+  --island-top: 10px;
+  --color-island: #000000;
+  --statusbar-pad-l: 31px;
+  --statusbar-pad-r: 16px;
+  --color-statusbar: #ffffff;
+  --touch-target: 44px;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Check badge placement (added by the style-tile pass) — the ⌀16 badge centre sits +18.5,+16.5 from the ⌀50 avatar centre (6.5.8, its 4–5 o'clock). Media-card image scrim fades into the card surface (not the canvas) so the image meets the card body without a hard edge. */
+  --check-badge-dx: 18.5px;
+  --check-badge-dy: 16.5px;
+  --scrim-card-bottom: linear-gradient(180deg, rgba(24, 21, 30, 0) 55%, rgba(24, 21, 30, 0.85) 100%);
+
+  /* Card imagery (added by the style-tile pass; no photography) — the per-category recipes from DESIGN_TOKENS.md §12 as complete background stacks, plus the shared overlays (top-left highlight, 6 % art-deco lines, stripes, skyline silhouette, glare band, rings, sheen, light beams, and the portrait shadow that makes swipe/profile cards read as people without depicting anyone). Kept here so components.css carries no literal colours. */
+  --art-dining: radial-gradient(120% 90% at 20% 20%, #d1662f 0%, transparent 55%), radial-gradient(90% 80% at 85% 80%, #6b1f3a 0%, transparent 60%), linear-gradient(135deg, #2a0f1a 0%, #0d0812 100%);
+  --art-nightlife: radial-gradient(70% 60% at 30% 70%, #b445f4 0%, transparent 60%), radial-gradient(60% 60% at 80% 20%, #3a34d6 0%, transparent 55%), radial-gradient(40% 40% at 60% 60%, #f5909e 0%, transparent 60%), linear-gradient(#0a0616, #0a0616);
+  --art-beach: radial-gradient(100% 70% at 50% 100%, #1fa6a0 0%, #0e5f6b 40%, transparent 75%), linear-gradient(180deg, #f29a6b 0%, #c85a6d 30%, #1b2a4d 62%, #0b1730 100%);
+  --art-wellness: radial-gradient(80% 70% at 70% 30%, #4fb39a 0%, transparent 60%), radial-gradient(90% 70% at 20% 90%, #2d4a5e 0%, transparent 65%), linear-gradient(#0d1a1c, #0d1a1c);
+  --art-beauty: radial-gradient(70% 70% at 25% 30%, #f5909e 0%, transparent 60%), radial-gradient(70% 60% at 80% 75%, #b445f4 0%, transparent 60%), linear-gradient(180deg, #2a1420 0%, #120a16 100%);
+  --art-fitness: radial-gradient(60% 60% at 80% 20%, #f25e5d 0%, transparent 55%), radial-gradient(80% 60% at 10% 90%, #3a34d6 0%, transparent 60%), linear-gradient(#0c0a14, #0c0a14);
+  --art-rooftop: linear-gradient(180deg, #3b2a8a 0%, #7a4cf8 35%, #f5909e 70%, #2a1130 100%);
+  --art-cafe: radial-gradient(80% 80% at 30% 70%, #c98a5a 0%, transparent 60%), radial-gradient(60% 60% at 80% 20%, #f5b0a0 0%, transparent 55%), linear-gradient(#1a0f10, #1a0f10);
+  --art-highlight: linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 40%);
+  --art-lines: repeating-linear-gradient(135deg, transparent 0 14px, rgba(255, 255, 255, 0.06) 14px 15px);
+  --art-stripes: repeating-linear-gradient(115deg, transparent 0 22px, rgba(255, 255, 255, 0.05) 22px 26px);
+  --art-skyline: linear-gradient(#010101, #010101) 2% 100% / 8% 26% no-repeat, linear-gradient(#010101, #010101) 12% 100% / 6% 40% no-repeat, linear-gradient(#010101, #010101) 22% 100% / 10% 30% no-repeat, linear-gradient(#010101, #010101) 38% 100% / 5% 58% no-repeat, linear-gradient(#010101, #010101) 47% 100% / 9% 34% no-repeat, linear-gradient(#010101, #010101) 62% 100% / 7% 44% no-repeat, linear-gradient(#010101, #010101) 76% 100% / 12% 28% no-repeat, linear-gradient(#010101, #010101) 92% 100% / 8% 36% no-repeat;
+  --art-glare: linear-gradient(180deg, transparent 0 46%, rgba(255, 255, 255, 0.18) 46% 48%, transparent 50%);
+  --art-rings: repeating-radial-gradient(circle at 70% 30%, transparent 0 28px, rgba(255, 255, 255, 0.06) 28px 29px, transparent 29px 60px);
+  --art-sheen: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.10) 45%, transparent 60%);
+  --art-beams: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.07) 39% 41%, transparent 42%), linear-gradient(75deg, transparent 58%, rgba(255, 255, 255, 0.05) 59% 61%, transparent 62%);
+  --art-portrait-shadow: radial-gradient(60% 45% at 50% 88%, rgba(0, 0, 0, 0.60) 0%, transparent 70%);
+
+  /* Fix pass round 1 (each re-measured on the PNGs; DESIGN_TOKENS.md §15) — the Explore layout toggle is a 55×42 stadium the height of the chips (6.5.3 ring x 928–1070, y 1319–1428 px), not a ⌀50 circle; the hero proper noun covers only ≈0–62 % of the brand gradient (6.5.3 "Dubai" runs #e57ca2 → #d34ae3 and never reaches violet — the trailing chevron carries the tail), so the gradient box is drawn at 160 % of the word; My Events stat tile number→label gap 14 (cap tops 21.1 / 55.5); task-card rhythm tag→title 11, title→meta 5, meta→caption 15 (6.5.5 cap tops 54.8 / 78.5 / 106.5 in a fixed 204 card); invite card title 5 below the padding, meta 6 below the title (6.5.4 cap tops 25.7 / 50.2); To Review row text column 3 below the padding, name→role 5, role→check-in 9, "Add Review" 8 below the padding so its baseline meets the name's (6.5.8 cap tops 23.7 / 48.6 / 74.3, link 26.0 — rendered 23.25 / 48.5 / 73.9 / 26.0); dashboard ↗ box at 12 top / 8 right (glyph 18.8 / 13.8 in on 6.5.5); calendar pill centre lifted 5 above the panel edge (6.5.3: 23 above / 13 below); the date-pill text stack sits 2 below centre (padding-top 4 on a centred column; 6.5.3 cap tops 23.0 / 52.1 / 73.9 vs a centred stack's 21.6 / 51.1 / 71.3). */
+  --size-layout-toggle-w: 55px;
+  --size-layout-toggle-h: var(--size-chip-h); /* = 42; the toggle and the chips beside it share one height and top edge (6.5.3 both y 1319–1428) */
+  --gradient-text-hero-span: 160%;
+  --space-stat-gap: 14px;
+  --space-task-tag-title: 11px;
+  --space-task-title-meta: 5px;
+  --space-task-meta-caption: 15px;
+  --space-invite-title-top: 5px;
+  --space-invite-title-meta: 6px;
+  --space-list-body-top: 3px;
+  --space-list-title-sub: 5px;
+  --space-list-sub-meta: 9px;
+  --space-list-action-top: 8px;
+  --date-pill-stack-bias: 4px;
+  --dash-tile-arrow-top: 14px; /* round 3: 18 box ⇒ ink inset (18 − 9.25) / 2 = 4.4 ⇒ glyph 18.4 from the top, 14.4 from the right (6.5.5 tile 1: 18.8 / 14.2) */
+  --dash-tile-arrow-right: 10px;
+  --calendar-pill-lift: 5px;
+
+  /* Fix pass round 2 (DESIGN_TOKENS.md §16) — value changes above, each re-measured on the PNGs: --gradient-filter-panel opaque; --color-text-tab-active #fff; --gradient-accent-deep 70deg; --type-tag-upper / --type-caption-upper 9.5; --type-chip 12; --type-tag-chip-upper 7.5; --size-chip-h 42 (+ the layout toggle bound to it); --chip-pad-x 18; --tag-chip-pad-x 11; --space-chip-gap 7; --size-icon-button-badge / --size-chip-badge 17; --count-badge-pad-x 4; island 103×33 @ 10; --radius-sheet = card (est.); grabber h5 (est.). New tokens: --gutter-review-left, --color-text-{secondary,tertiary,muted}-hex, --badge-sm-pad-x, --fs-chip. */
+
+  /* Fix pass round 3 (DESIGN_TOKENS.md §17) — value changes above, each re-measured on the PNGs and then calibrated by rendering the candidate values at 2.611 px/CSS and measuring them with the same code (scratchpad/measure/fixer3/): --type-tag-chip-upper 8 + --tag-chip-pad-x 12; --type-stat-label 10.5; --radius-md / --radius-tile / --radius-segmented / --radius-toggle-bar 17; --icon-size-layout-toggle 15; --icon-size-chip 17; --icon-size-tile-arrow 18 with --dash-tile-arrow-top 14 / --dash-tile-arrow-right 10. New tokens: --icon-size-bell 22, --icon-size-avatar-glyph 27, --icon-size-arrow 19, --fs-label-upper-3up 10.5, --meta-sep-scale .55 / --meta-sep-gap 3.5 (the "•" separator in meta lines). */
+}

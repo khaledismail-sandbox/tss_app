@@ -1,0 +1,127 @@
+/* screens-venue.css — The Secret Society demo · venue-manager screen layouts (dashboard, slot calendar, applications
+   inbox, check-in, rate collaboration, venue profile). Layout only: every colour, radius, size and font is a var(--…)
+   token from css/tokens.css; component looks come from css/components.css (the approved design system). */
+
+/* ---------- shared ---------- */
+.va-page { padding-bottom: var(--space-8); }
+.va-empty { font: var(--type-body); color: var(--color-text-secondary); text-align: center; padding: var(--space-6) var(--space-4); }
+/* To Review row + an optional footer under the text: status tags, or the Decline | Approve pair (invite-card rhythm) */
+.va-row-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-button-gap); margin-top: var(--space-3); }
+.va-row-foot.is-actions { margin-top: var(--space-row-to-buttons); }
+.va-row .list-row-action .tag { margin-top: var(--space-1); }
+/* key : value lines (check-in sheet, rating summary, attribution) */
+.kv-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.kv-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); font: var(--type-body); }
+.kv-line .k { flex: none; color: var(--color-text-meta); }
+.kv-line .v { min-width: 0; text-align: right; word-break: break-word; }
+/* selectable rows inside sheets (seat picker, decline reasons) */
+.pick-list { display: flex; flex-direction: column; gap: var(--space-2); }
+.pick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--size-field-h);
+  padding: var(--space-3) calc(var(--space-6) + var(--space-5)) var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-w-ring) solid transparent;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+.pick:active { background: var(--color-surface-pressed); }
+.pick.is-selected { border-color: var(--color-accent-tab); background: var(--color-surface-pressed); }
+.pick:disabled, .pick.is-full { color: var(--color-text-disabled); cursor: default; }
+.pick.is-full .pick-sub { color: var(--color-text-disabled); }
+.pick-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.pick-title { font: var(--type-body); }
+.pick-sub { font: var(--type-meta-sm); color: var(--color-text-tertiary); }
+.pick > .persona-check { top: 50%; right: var(--space-3); margin-top: calc(-1 * var(--space-6) / 2); }
+/* seat dots: taken = action gradient, free = outlined */
+.seat-dots { display: inline-flex; align-items: center; gap: var(--space-2); }
+.seat-dot { flex: none; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-pill); box-shadow: inset 0 0 0 var(--border-w-hairline) var(--color-border-strong); }
+.seat-dot.is-taken { background: var(--gradient-badge); box-shadow: none; }
+
+/* ---------- dashboard (6.5.5) ---------- */
+.task-carousel { gap: var(--space-carousel-peek); }
+.va-dash .task-card .card-meta { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.venue-row { display: flex; align-items: center; gap: var(--space-thumb-text-gap); }
+.venue-row-body { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.venue-row-caption { font: var(--type-meta); color: var(--color-text-tertiary); }
+.venue-row-title { font: var(--type-display-sm-light); letter-spacing: var(--tracking-normal); }
+.dash-tile.is-create { cursor: default; }
+
+/* ---------- slot calendar ---------- */
+.offer-card-head { display: flex; align-items: center; gap: var(--space-thumb-text-gap); }
+.slot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-tile-gap); }
+.slot-card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); border-radius: var(--radius-tile-dashboard); }
+.slot-card-day { font: var(--type-meta); color: var(--color-text-meta); }
+.slot-card-time { font: var(--type-title-strong); }
+.slot-card .seat-dots { margin-top: var(--space-1); }
+.slot-card-meta { font: var(--type-meta-sm); color: var(--color-text-tertiary); }
+.slot-card.is-full .slot-card-meta { color: var(--color-danger-text); }
+.slot-card-names { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-1); }
+
+/* ---------- applications inbox (6.5.8) ---------- */
+.inbox-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--touch-target); }
+.tip-card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.tip-card .t-body { color: var(--color-text-secondary); }
+
+/* ---------- check-in ---------- */
+.scan-card { display: flex; flex-direction: column; }
+.qr-frame {
+  position: relative;
+  width: calc(var(--size-stat-tile-h) * 2);
+  height: calc(var(--size-stat-tile-h) * 2);
+  margin: var(--space-2) auto 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+.qr-corner { position: absolute; width: var(--space-6); height: var(--space-6); border: var(--border-w-ring) solid var(--color-accent-tab); }
+.qr-corner.is-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; border-top-left-radius: var(--radius-lg); }
+.qr-corner.is-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; border-top-right-radius: var(--radius-lg); }
+.qr-corner.is-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; border-bottom-left-radius: var(--radius-lg); }
+.qr-corner.is-br { bottom: 0; right: 0; border-left: 0; border-top: 0; border-bottom-right-radius: var(--radius-lg); }
+.qr-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: var(--space-1); width: 100%; height: 100%; }
+.qr-cell { border-radius: calc(var(--space-1) / 2); background: var(--color-surface-pressed); }
+.qr-cell.is-on { background: var(--color-text-primary); }
+.code-field { justify-content: center; }
+.code-field input { text-align: center; text-transform: uppercase; letter-spacing: 0.12em; font: var(--fw-semibold) var(--fs-title)/1.2 var(--font-mono); }
+.code-field input::placeholder { color: var(--color-text-muted); letter-spacing: 0.12em; }
+.checkin-error { display: flex; justify-content: center; margin-top: var(--space-3); }
+.field.is-shake { animation: va-shake var(--duration-swipe) var(--ease-standard); }
+@keyframes va-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(calc(-1 * var(--space-2))); }
+  40% { transform: translateX(var(--space-2)); }
+  60% { transform: translateX(calc(-1 * var(--space-1))); }
+  80% { transform: translateX(var(--space-1)); }
+}
+.checkin-success .card-title { font: var(--type-list-title-strong); }
+
+/* ---------- rate collaboration ---------- */
+.stars { display: flex; justify-content: center; gap: var(--space-2); }
+.star-btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-spring);
+}
+.star-btn.is-on { color: var(--color-heart-liked); }
+.star-btn.is-on .icon { fill: currentColor; }
+button.star-btn:active { transform: scale(var(--press-scale)); }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--touch-target); padding: var(--space-3) 0; }
+.toggle-row:first-child { padding-top: 0; }
+.toggle-row:last-child { padding-bottom: 0; }
+.toggle-row + .toggle-row { border-top: var(--border-w-hairline) solid var(--color-divider); }
+
+/* ---------- venue profile ---------- */
+.venue-card-head { display: flex; align-items: center; gap: var(--space-thumb-text-gap); }
+.va-profile .stat-row { justify-content: space-between; }
