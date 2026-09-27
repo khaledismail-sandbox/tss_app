@@ -431,7 +431,9 @@ window.TSS = window.TSS || {};
       card('Marketplace (shared)', marketBody) +
       card('Last 20 events', events, { full: true, aside: log.length + ' logged · ' + invalidCount + ' invalid' + (invalidCount ? ' — fix before the demo' : '') }) +
       card('Routes', routes, { full: true }) +
-      '</div>';
+      '</div>' +
+      // Tiny low-opacity reset dot (debug page only): amplitude.reset() then reload to the app root.
+      '<button type="button" data-dbg="hardreset" aria-label="Reset SDK identity" title="Reset" style="position:fixed;right:10px;bottom:10px;width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#fff;opacity:0.15;cursor:pointer;z-index:50"></button>';
   }
 
   screens.debug = {
@@ -471,6 +473,9 @@ window.TSS = window.TSS || {};
           try { if (window.amplitude && typeof window.amplitude.reset === 'function') window.amplitude.reset(); } catch (err) { /* ignore */ }
           ui.toast('Session cleared for this window');
           draw();
+        } else if (action === 'hardreset') {
+          try { if (window.amplitude && typeof window.amplitude.reset === 'function') window.amplitude.reset(); } catch (err) { /* ignore */ }
+          window.location.href = TSS.config.BASE + '/';
         } else if (action === 'copy') {
           var text = '[]';
           try { text = JSON.stringify(TSS.analytics.getDebugLog(), null, 2); } catch (err) { /* keep */ }
